@@ -1,0 +1,11 @@
+{
+  "name": "doc-review",
+  "owner": { "name": "TJ Lind" },
+  "plugins": [
+    {
+      "name": "doc-review",
+      "source": "./plugins/doc-review",
+      "description": "Review a Markdown document with Claude: margin comments, suggested edits you accept or reject, and a Send to Claude button."
+    }
+  ]
+}

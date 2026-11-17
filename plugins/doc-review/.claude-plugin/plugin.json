@@ -1,0 +1,8 @@
+{
+  "name": "doc-review",
+  "description": "Review a Markdown document with Claude in a Google Docs style page: comments in the margin, suggested edits you accept or reject, and a Send to Claude button. Claude Code tab only.",
+  "version": "0.1.5",
+  "author": { "name": "TJ Lind" },
+  "repository": "https://github.com/teeejlind/doc-review",
+  "license": "MIT"
+}

@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../node_modules/.cache/tsbuild/tests",
+    "jsx": "react-jsx",
+    "types": ["node", "vite/client"]
+  },
+  "include": ["**/*.ts", "**/*.tsx", "../*.config.ts", "../scripts/**/*.ts"],
+  "exclude": ["corpus/fixtures/**", "e2e/.tmp/**"],
+  "references": [
+    { "path": "../shared" },
+    { "path": "../core" },
+    { "path": "../node" },
+    { "path": "../server" },
+    { "path": "../cli" },
+    { "path": "../web" }
+  ]
+}

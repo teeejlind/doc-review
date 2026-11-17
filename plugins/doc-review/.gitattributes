@@ -1,0 +1,6 @@
+# Shell scripts must keep LF (a CRLF checkout breaks `sh`); PowerShell scripts keep CRLF on Windows.
+*.sh eol=lf
+*.ps1 eol=crlf
+*.lock eol=lf
+# The built runtime is byte-exact output: never convert line endings in it.
+runtime/** -text

@@ -1,0 +1,211 @@
+/*
+ * web/src/handoff/handoff.css (P3; CONTRACTS §8.5, §12.10, §12.2.1). The Claude badge, the Send button and the
+ * clipboard-refused modal. Colours only through --mdr-* tokens.
+ */
+
+/* ---------------------------------------------------------------- Claude badge (§8.5) */
+
+.mdr-claude-badge {
+  display: inline-flex;
+  /* gives way first when the row is tight (the text ellipsizes; the title and the live region keep all of it) */
+  flex: 0 4 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  font-size: var(--mdr-ui-size-small);
+  color: var(--mdr-text-muted);
+}
+
+/* idle: the live region stays in the page (so the next change is announced) but takes no room */
+.mdr-claude-badge[data-state="idle"] {
+  gap: 0;
+}
+
+.mdr-claude-badge-main {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 1 auto;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 300px;
+  min-height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+  font: inherit;
+  white-space: nowrap;
+}
+
+.mdr-claude-badge-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mdr-claude-badge-action,
+.mdr-claude-badge-count {
+  flex: none;
+  white-space: nowrap;
+}
+
+button.mdr-claude-badge-main {
+  cursor: pointer;
+}
+
+button.mdr-claude-badge-main:hover {
+  background: var(--mdr-author-claude-soft);
+}
+
+.mdr-claude-badge-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--mdr-author-claude);
+}
+
+.mdr-claude-badge[data-state="waiting-pickup"] .mdr-claude-badge-dot {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--mdr-author-claude);
+}
+
+.mdr-claude-badge-dot[data-pulse="true"] {
+  animation: mdr-badge-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes mdr-badge-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.55);
+    opacity: 0.45;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdr-claude-badge-dot[data-pulse="true"] {
+    animation: none;
+  }
+}
+
+.mdr-claude-badge-count {
+  flex: none;
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--mdr-author-claude);
+  color: var(--mdr-surface);
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.mdr-claude-badge-action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mdr-accent);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mdr-claude-badge-action:hover {
+  text-decoration: underline;
+}
+
+/* ---------------------------------------------------------------- Send to Claude */
+
+.mdr-send {
+  white-space: nowrap;
+}
+
+.mdr-send[data-busy="true"] svg {
+  animation: mdr-send-nudge 0.9s ease-in-out infinite;
+}
+
+@keyframes mdr-send-nudge {
+  50% {
+    transform: translateX(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdr-send[data-busy="true"] svg {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------- the clipboard-refused modal (§12.10 step 5) */
+
+.mdr-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: color-mix(in srgb, var(--mdr-text) 28%, transparent);
+}
+
+.mdr-modal {
+  box-sizing: border-box;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 22px 24px 20px;
+  border-radius: var(--mdr-radius);
+  background: var(--mdr-surface-raised);
+  box-shadow: var(--mdr-shadow-popover);
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+}
+
+.mdr-modal-title {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.mdr-modal-text {
+  margin: 0 0 12px;
+  color: var(--mdr-text-muted);
+}
+
+.mdr-modal-prompt {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--mdr-rule) 55%, transparent);
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-bg);
+  color: var(--mdr-text);
+  font: var(--mdr-ui-size-small) / 1.5 var(--mdr-font-mono);
+  resize: vertical;
+}
+
+.mdr-modal-error {
+  margin: 10px 0 0;
+  color: var(--mdr-danger);
+}
+
+.mdr-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.mdr-modal :focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}

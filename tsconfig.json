@@ -1,0 +1,12 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./shared" },
+    { "path": "./core" },
+    { "path": "./node" },
+    { "path": "./server" },
+    { "path": "./cli" },
+    { "path": "./web" },
+    { "path": "./tests" }
+  ]
+}

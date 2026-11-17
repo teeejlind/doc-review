@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.review/
+tests/corpus/fixtures/real/
+test-results/
+playwright-report/
+.dist-check/
+.e2e-dist/
+tests/e2e/.tmp/
+.claude/settings.local.json
+.DS_Store

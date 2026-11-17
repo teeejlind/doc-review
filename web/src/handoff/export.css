@@ -1,0 +1,45 @@
+/* web/src/handoff/export.css: the top bar's Export menu (ExportMenu.tsx). */
+.mdr-export {
+  position: relative;
+  display: inline-flex;
+}
+.mdr-export-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 40;
+  min-width: 220px;
+  padding: 4px;
+  background: var(--mdr-surface-raised);
+  color: var(--mdr-text);
+  border: 1px solid color-mix(in srgb, var(--mdr-rule) 45%, transparent);
+  border-radius: 8px;
+  box-shadow: var(--mdr-shadow-popover);
+}
+.mdr-export-menu [role='menuitem'] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mdr-export-menu [role='menuitem']:hover,
+.mdr-export-menu [role='menuitem']:focus-visible {
+  background: var(--mdr-hover);
+  outline: none;
+}
+.mdr-export-menu [role='menuitem']:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--mdr-focus);
+}
+.mdr-export-hint {
+  font-size: 0.8em;
+  color: var(--mdr-text-faint);
+}

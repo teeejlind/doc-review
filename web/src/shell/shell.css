@@ -1,0 +1,637 @@
+/*
+ * web/src/shell/shell.css (P3; CONTRACTS §12.0.1, §12.2.3, §12.2.4, R3.1, R7.1).
+ * The shell: top bar, banner slot, the single scroll container and its canvas [doc column | gutter | rail],
+ * the Suggesting-mode rule on the doc column, quiet chrome, and the empty / error states.
+ */
+
+.mdr-app {
+  --shell-rail-width: 300px;
+  --shell-rail-min: 240px;
+  --shell-gutter: 48px;
+  --shell-doc-top: 56px;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--mdr-bg);
+  color: var(--mdr-text);
+}
+
+/* ---------------------------------------------------------------- top bar */
+
+.mdr-topbar {
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  min-height: 48px;
+  padding: 6px 16px;
+  background: var(--mdr-bg);
+  border-bottom: 1px solid color-mix(in srgb, var(--mdr-rule) 35%, transparent);
+}
+
+/* an empty or error page has no document and so nothing for the bar to hold (the `hidden` attribute loses to the display above) */
+.mdr-topbar[hidden] {
+  display: none;
+}
+
+#mdr-toolbar-host {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* §12.2.4: P3's own top-bar items read the quiet-chrome token (the bar itself never fades). The token is read by each
+   item, not by the row, so one item can opt out: R1.5, the save state is always visible. A warning or error chip
+   (Offline, Conflict, Couldn't save, Read-only) stays at full strength while everything else goes quiet. */
+/* The actions row reserves room for a Claude badge (the idle row is about 450 px; the slot adds 150 px), so a badge
+   appearing or changing text never wraps the bar and never moves the document. It is right-aligned, shrinks instead
+   of overflowing (the badge and the save message ellipsize; their full text is in the title and the live region), and
+   wraps under the toolbar as one row below the width where both no longer fit on a line. */
+.mdr-topbar-actions {
+  flex: 1 1 600px;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  align-items: center;
+  gap: 8px;
+}
+
+.mdr-topbar-actions > * {
+  opacity: var(--mdr-chrome-opacity);
+  transition: opacity 280ms ease;
+}
+
+.mdr-topbar-actions > .mdr-save-chip[data-tone="warn"],
+.mdr-topbar-actions > .mdr-save-chip[data-tone="danger"] {
+  opacity: 1;
+}
+
+.mdr-topbar-actions:empty {
+  display: none;
+}
+
+/* Desktop widths (1280-1600 px and up): the Claude badge keeps its full text (the document's name is in the file strip,
+   not this row). The toolbar gives way first: it takes what the actions row does not need, and scrolls sideways inside
+   its own box when it cannot fit (its basis is 0, so the bar still never wraps). The mode pill never scrolls away with
+   it: editor.css sticks it to the box's right edge. Below 1100 px the rules above apply and the toolbar wraps instead. */
+@media (min-width: 1100px) {
+  #mdr-toolbar-host {
+    flex: 1 1 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .mdr-topbar-actions {
+    flex: 0 1 auto;
+  }
+
+  .mdr-topbar-actions .mdr-claude-badge {
+    flex: 0 0 auto;
+  }
+}
+
+/* ---------------------------------------------------------------- banners */
+
+.mdr-banner-slot {
+  flex: none;
+}
+
+.mdr-banner-slot:empty {
+  display: none;
+}
+
+.mdr-banner {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mdr-rule) 35%, transparent);
+  background: var(--mdr-surface);
+  color: var(--mdr-text);
+  font-size: var(--mdr-ui-size);
+}
+
+.mdr-banner::before {
+  content: '';
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mdr-warn);
+}
+
+.mdr-banner[data-kind="contract-mismatch"]::before,
+.mdr-banner[data-kind="doc-removed"]::before,
+.mdr-banner[data-kind="editor-error"]::before {
+  background: var(--mdr-danger);
+}
+
+.mdr-banner-text {
+  flex: 1 1 auto;
+}
+
+/* ---------------------------------------------------------------- the scroll container and canvas */
+
+.mdr-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.mdr-canvas {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0;
+  min-height: 100%;
+  padding: 0 32px;
+}
+
+/* A balancing spacer the width of the rail and its gutter, so on wide screens the text column sits in the middle of
+   the window. It gives way first (shrink 100) as the window narrows. */
+.mdr-canvas::before {
+  content: '';
+  flex: 0 100 calc(var(--shell-rail-width) + var(--shell-gutter));
+  min-width: 0;
+}
+
+.mdr-doc-col {
+  box-sizing: border-box;
+  position: relative;
+  flex: 0 1 var(--mdr-measure);
+  min-width: 0;
+  max-width: var(--mdr-measure);
+  /* the gutter to the rail is a margin (not a flex gap), so the spacer collapsing takes no gap with it */
+  margin-right: var(--shell-gutter);
+  padding: var(--shell-doc-top) 0 40vh;
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-body);
+  font-size: var(--mdr-body-size);
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  line-height: var(--mdr-body-leading);
+}
+
+/* §12.2.4: Suggesting mode draws a 2 px --mdr-suggest rule on the doc column's left edge. */
+.mdr-doc-col::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -22px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--mdr-suggest);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+
+.mdr-app[data-mode="suggesting"] .mdr-doc-col::before {
+  opacity: 1;
+}
+
+.mdr-rail {
+  box-sizing: border-box;
+  position: relative;
+  /* gives way after the spacer and with the doc column as the window narrows, but never below --shell-rail-min */
+  flex: 0 1 var(--shell-rail-width);
+  min-width: var(--shell-rail-min);
+  width: var(--shell-rail-width);
+  overflow-anchor: none;
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+}
+
+/* ---------------------------------------------------------------- empty and error states (§12.0.1, §12.0.2) */
+
+.mdr-empty-state {
+  box-sizing: border-box;
+  margin: 10vh auto 0;
+  max-width: 36rem;
+  padding: 0 0 48px;
+  color: var(--mdr-text-muted);
+  font-family: var(--mdr-font-body);
+  font-size: var(--mdr-body-size);
+  line-height: var(--mdr-body-leading);
+  text-align: center;
+}
+
+.mdr-empty-state-text {
+  margin: 0;
+  color: var(--mdr-text);
+}
+
+.mdr-empty-state-detail {
+  margin: 12px 0 0;
+  color: var(--mdr-text-muted);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+}
+
+.mdr-empty-state code,
+.mdr-banner code {
+  padding: 0.1em 0.35em;
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-mono);
+  font-size: 0.82em;
+}
+
+.mdr-empty-state .mdr-button {
+  margin-top: 28px;
+}
+
+.mdr-empty-state .mdr-button + .mdr-button {
+  margin-left: 8px;
+}
+
+/* ---------------------------------------------------------------- save chip (§12.4) */
+
+.mdr-save-chip {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  max-width: 280px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: var(--mdr-radius-small);
+  background: none;
+  color: var(--mdr-text-muted);
+  font: var(--mdr-ui-size-small) / 1 var(--mdr-font-ui);
+  white-space: nowrap;
+}
+
+/* "Saved" and "Saving…" never shrink; the long warning messages (Offline, Read-only: …) ellipsize before they push Send
+   off the row, once the badge has given way (its shrink factor is higher). */
+.mdr-save-chip[data-tone="warn"],
+.mdr-save-chip[data-tone="danger"] {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+button.mdr-save-chip {
+  cursor: pointer;
+}
+
+button.mdr-save-chip:hover {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+.mdr-save-chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mdr-save-chip-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mdr-success);
+}
+
+.mdr-save-chip[data-tone="busy"] .mdr-save-chip-dot {
+  background: var(--mdr-text-faint);
+}
+
+.mdr-save-chip[data-tone="warn"] {
+  color: var(--mdr-warn);
+}
+
+.mdr-save-chip[data-tone="warn"] .mdr-save-chip-dot {
+  background: var(--mdr-warn);
+}
+
+.mdr-save-chip[data-tone="danger"] {
+  color: var(--mdr-danger);
+}
+
+.mdr-save-chip[data-tone="danger"] .mdr-save-chip-dot {
+  background: var(--mdr-danger);
+}
+
+.mdr-save-chip-code {
+  padding: 1px 4px;
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-mono);
+  font-size: 11px;
+}
+
+/* ---------------------------------------------------------------- toasts (§12.10, §12.14) */
+
+.mdr-toasts {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: min(480px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.mdr-toast {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 8px 8px 14px;
+  border-radius: var(--mdr-radius);
+  background: var(--mdr-text);
+  box-shadow: var(--mdr-shadow-popover);
+  color: var(--mdr-bg);
+  font: var(--mdr-ui-size) / 1.4 var(--mdr-font-ui);
+  pointer-events: auto;
+  animation: mdr-toast-in 160ms ease-out;
+}
+
+@keyframes mdr-toast-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdr-toast {
+    animation: none;
+  }
+}
+
+.mdr-toast-mark {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mdr-bg);
+  opacity: 0.6;
+}
+
+.mdr-toast[data-kind="warn"] .mdr-toast-mark,
+.mdr-toast[data-kind="error"] .mdr-toast-mark {
+  opacity: 1;
+}
+
+.mdr-toast-text {
+  flex: 1 1 auto;
+}
+
+.mdr-toast-action {
+  flex: none;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid color-mix(in srgb, var(--mdr-bg) 45%, transparent);
+  border-radius: var(--mdr-radius-small);
+  background: none;
+  color: var(--mdr-bg);
+  font: 600 var(--mdr-ui-size-small) / 1 var(--mdr-font-ui);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mdr-toast-action:hover {
+  background: color-mix(in srgb, var(--mdr-bg) 14%, transparent);
+}
+
+.mdr-toast-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mdr-radius-small);
+  background: none;
+  color: var(--mdr-bg);
+  opacity: 0.75;
+  cursor: pointer;
+}
+
+.mdr-toast-close:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--mdr-bg) 14%, transparent);
+}
+
+.mdr-toast :focus-visible {
+  outline: 2px solid var(--mdr-bg);
+  outline-offset: 2px;
+}
+
+/* the toasts clear the narrow-mode sheet's bar */
+.mdr-app[data-narrow="true"] .mdr-toasts {
+  bottom: 64px;
+}
+
+/* ---------------------------------------------------------------- top bar: the history button */
+
+.mdr-history-button[aria-expanded="true"] {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+/* ---------------------------------------------------------------- mid widths (the Claude browser pane is 700-900 px)
+   Between the sheet breakpoint and a comfortable desktop the rail stays; the page margins and the gutter give way
+   first, then the doc column and the rail share what is left (the rail never drops under --shell-rail-min). */
+
+@media (max-width: 1099.98px) {
+  .mdr-app {
+    --shell-gutter: 32px;
+  }
+
+  .mdr-canvas {
+    padding: 0 20px;
+  }
+}
+
+/* ---------------------------------------------------------------- narrow (§11.4; the bottom sheet is web/src/narrow) */
+
+@media (max-width: 639.98px) {
+  .mdr-canvas {
+    padding: 0 20px;
+  }
+
+  .mdr-canvas::before,
+  .mdr-rail {
+    display: none;
+  }
+
+  .mdr-doc-col {
+    margin-right: 0;
+  }
+
+  .mdr-doc-col::before {
+    left: -12px;
+  }
+
+  /* the top bar wraps under P2's toolbar when it must; labels shorten to icons (each button keeps its aria-label) */
+  .mdr-topbar {
+    column-gap: 8px;
+    padding: 6px 12px;
+  }
+
+  .mdr-topbar-actions {
+    gap: 4px;
+  }
+
+  .mdr-topbar-label {
+    display: none;
+  }
+
+  .mdr-save-chip-label {
+    max-width: 110px;
+  }
+
+  .mdr-claude-badge-main {
+    max-width: 150px;
+  }
+}
+
+/* ---------------------------------------------------------------- file strip (onboarding: where the document lives)
+   The top bar's last row: folder and file name on the left, Reveal / Copy path on the right. It sits inside the
+   header (so --shell-topbar-height covers it) and spans the bar edge to edge under a hairline. Quiet: small muted type,
+   28 px, and it fades with the rest of the chrome. The folder ellipsizes from its start (the rtl box with an ltr bdi
+   inside), so the folders nearest the file stay readable. */
+
+.mdr-file-strip {
+  --file-strip-inset: 16px;
+
+  box-sizing: border-box;
+  flex: 0 0 calc(100% + 2 * var(--file-strip-inset));
+  order: 99;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  min-height: 28px;
+  margin: 2px calc(-1 * var(--file-strip-inset)) -6px;
+  padding: 0 var(--file-strip-inset);
+  border-top: 1px solid color-mix(in srgb, var(--mdr-rule) 35%, transparent);
+  color: var(--mdr-text-muted);
+  font: var(--mdr-ui-size-small) / 1.3 var(--mdr-font-ui);
+  opacity: var(--mdr-chrome-opacity);
+  transition: opacity 280ms ease;
+}
+
+.mdr-file-strip-path {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.mdr-file-strip-icon {
+  flex: none;
+  margin-right: 6px;
+  color: var(--mdr-text-faint);
+}
+
+.mdr-file-strip-dir {
+  /* the folder gives way long before the file name does */
+  flex: 0 1000 auto;
+  min-width: 0;
+  overflow: hidden;
+  direction: rtl;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.mdr-file-strip-sep {
+  flex: none;
+  color: var(--mdr-text-faint);
+}
+
+.mdr-file-strip-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mdr-text);
+  font-weight: 500;
+  text-overflow: ellipsis;
+}
+
+.mdr-file-strip-actions {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mdr-file-strip-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 22px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--mdr-radius-small);
+  background: transparent;
+  color: var(--mdr-text-muted);
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.mdr-file-strip-button:hover {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+.mdr-file-strip-button[data-state="copied"] {
+  color: var(--mdr-success);
+}
+
+.mdr-file-strip-button[data-state="failed"] {
+  color: var(--mdr-danger);
+}
+
+.mdr-file-strip :focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+/* narrow: the bar's own inset; the folder goes first (the name stays), the buttons keep only their icons */
+@media (max-width: 639.98px) {
+  .mdr-file-strip {
+    --file-strip-inset: 12px;
+  }
+
+  .mdr-file-strip-dir,
+  .mdr-file-strip-sep,
+  .mdr-file-strip-label {
+    display: none;
+  }
+
+  .mdr-file-strip-button {
+    width: 28px;
+    justify-content: center;
+    padding: 0;
+  }
+}

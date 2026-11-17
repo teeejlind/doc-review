@@ -1,0 +1,35 @@
+<!doctype html>
+<!--
+  web/index.html (P3; CONTRACTS §12.0.1, §12.0.2). server/static.ts (P1) replaces the meta placeholder below with
+  the mdr-* meta tags; under `npm run dev` the serve-only Vite plugin does the same from the dev server. The static
+  body is the §12.0.1 shell (host ids included) so the first paint and any no-JS fetch see it; main.tsx then renders
+  the same structure (or the empty state) into #mdr-app. Styles are bundled from web/src/theme and web/src/shell.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <!--mdr:meta-->
+    <title>mdr</title>
+    <script type="module" crossorigin src="/assets/index-C80c4KaZ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-D8n3CcXp.css">
+  </head>
+  <body>
+    <div id="mdr-app" class="mdr-app" data-mode="editing">
+      <header class="mdr-topbar" data-testid="mdr-topbar" data-quiet="false">
+        <div id="mdr-toolbar-host"></div>
+        <div class="mdr-topbar-actions"></div>
+      </header>
+      <div class="mdr-banner-slot"></div>
+      <div id="mdr-scroll" class="mdr-scroll" data-testid="mdr-scroll">
+        <div class="mdr-canvas">
+          <main class="mdr-doc-col">
+            <div id="mdr-editor-host"></div>
+          </main>
+          <aside class="mdr-rail" aria-label="Comments" data-testid="mdr-rail"></aside>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

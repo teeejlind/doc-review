@@ -1,0 +1,4 @@
+# Integrator (CONTRACTS §1, §2.4 item 7). Fixture and corpus bytes are under test (CRLF, BOM, trailing whitespace,
+# missing final EOL), so git must never normalize them.
+tests/fixtures/docs/** -text
+tests/corpus/fixtures/** -text

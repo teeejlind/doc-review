@@ -1,0 +1,333 @@
+/*
+ * web/src/history/history.css (P3; CONTRACTS §10 UI, §11.6, §12.2.1). The version-history panel: a drawer from the
+ * right edge under the top bar, the timeline on its left and the diff on its right. Changed blocks carry their last
+ * author's colour; insertions are underlined and deletions struck through, so colour is never the only signal.
+ */
+
+.mdr-history {
+  box-sizing: border-box;
+  position: fixed;
+  /* under the real top bar, which is two rows at pane widths (the shell writes its height) */
+  top: var(--shell-topbar-height, 48px);
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  width: min(1040px, 92vw);
+  border-left: 1px solid color-mix(in srgb, var(--mdr-rule) 35%, transparent);
+  background: var(--mdr-surface);
+  box-shadow: var(--mdr-shadow-popover);
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+}
+
+.mdr-history :focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}
+
+.mdr-history-head {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 10px 20px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mdr-rule) 25%, transparent);
+}
+
+.mdr-history-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.mdr-history-note {
+  flex: none;
+  margin: 0;
+  padding: 8px 20px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mdr-rule) 25%, transparent);
+  background: var(--mdr-hover);
+}
+
+.mdr-history-note--error {
+  color: var(--mdr-danger);
+}
+
+.mdr-history-cols {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+/* ---------------------------------------------------------------- the timeline */
+
+.mdr-history-list {
+  flex: 0 0 300px;
+  overflow-y: auto;
+  border-right: 1px solid color-mix(in srgb, var(--mdr-rule) 25%, transparent);
+  background: var(--mdr-bg);
+}
+
+.mdr-history-rows {
+  margin: 0;
+  padding: 6px 0 16px;
+  list-style: none;
+}
+
+.mdr-history-row {
+  --row-author: var(--mdr-text-muted);
+  position: relative;
+  padding: 10px 14px 10px 20px;
+  border-left: 3px solid transparent;
+}
+
+.mdr-history-row[data-by="TJ"] {
+  --row-author: var(--mdr-author-tj);
+}
+
+.mdr-history-row[data-by="Claude"] {
+  --row-author: var(--mdr-author-claude);
+}
+
+.mdr-history-row[data-by="external"] {
+  --row-author: var(--mdr-author-external);
+}
+
+.mdr-history-row[data-from="true"],
+.mdr-history-row[data-to="true"] {
+  border-left-color: var(--row-author);
+  background: var(--mdr-surface);
+}
+
+.mdr-history-row + .mdr-history-row {
+  border-top: 1px solid color-mix(in srgb, var(--mdr-rule) 14%, transparent);
+}
+
+.mdr-history-row-main {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: 2px 8px;
+}
+
+.mdr-history-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--row-author);
+}
+
+.mdr-history-who {
+  font-weight: 600;
+}
+
+.mdr-history-v {
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+  font-variant-numeric: tabular-nums;
+}
+
+.mdr-history-when,
+.mdr-history-detail {
+  grid-column: 2 / 4;
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-history-row-actions {
+  display: flex;
+  gap: 4px;
+  margin: 8px 0 0 16px;
+}
+
+.mdr-history-pick,
+.mdr-history-restore {
+  box-sizing: border-box;
+  min-height: 24px;
+  padding: 0 9px;
+  border: 1px solid color-mix(in srgb, var(--mdr-rule) 45%, transparent);
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-surface);
+  color: var(--mdr-text);
+  font: 500 var(--mdr-ui-size-small) / 1 var(--mdr-font-ui);
+  cursor: pointer;
+}
+
+.mdr-history-pick:hover,
+.mdr-history-restore:hover:not(:disabled) {
+  background: var(--mdr-hover);
+}
+
+.mdr-history-pick[aria-pressed="true"] {
+  border-color: var(--mdr-accent);
+  background: var(--mdr-accent);
+  color: var(--mdr-accent-text);
+}
+
+.mdr-history-restore {
+  margin-left: auto;
+}
+
+.mdr-history-restore:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mdr-history-empty {
+  margin: 0;
+  padding: 16px 20px;
+  color: var(--mdr-text-muted);
+}
+
+/* a document with nothing to compare yet: one line instead of an empty timeline and diff */
+.mdr-history-none {
+  margin: 0;
+  padding: 28px 20px;
+  color: var(--mdr-text-muted);
+}
+
+/* ---------------------------------------------------------------- the diff */
+
+.mdr-history-diff {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-y: auto;
+  padding: 0 28px 48px;
+}
+
+.mdr-history-diff-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin: 0 -28px 12px;
+  padding: 12px 28px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mdr-rule) 20%, transparent);
+  background: var(--mdr-surface);
+}
+
+.mdr-history-diff-count {
+  color: var(--mdr-text-muted);
+}
+
+.mdr-history-blocks {
+  max-width: var(--mdr-measure);
+  font-family: var(--mdr-font-body);
+  font-size: 16px;
+  line-height: var(--mdr-body-leading);
+}
+
+.mdr-hd-block {
+  --hd-author: var(--mdr-text-muted);
+  --hd-soft: var(--mdr-hover);
+  position: relative;
+  margin: 0 0 10px;
+  padding: 4px 0 4px 14px;
+  border-left: 3px solid transparent;
+}
+
+.mdr-hd-block[data-by="TJ"] {
+  --hd-author: var(--mdr-author-tj);
+  --hd-soft: var(--mdr-author-tj-soft);
+}
+
+.mdr-hd-block[data-by="Claude"] {
+  --hd-author: var(--mdr-author-claude);
+  --hd-soft: var(--mdr-author-claude-soft);
+}
+
+.mdr-hd-block[data-by="external"] {
+  --hd-author: var(--mdr-author-external);
+  --hd-soft: color-mix(in srgb, var(--mdr-author-external) 14%, var(--mdr-surface));
+}
+
+.mdr-hd-block:not([data-op="equal"]) {
+  border-left-color: var(--hd-author);
+}
+
+.mdr-hd-text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.mdr-hd-block[data-kind="heading"] .mdr-hd-text {
+  font-weight: 650;
+}
+
+.mdr-hd-block[data-context="true"] .mdr-hd-text {
+  color: var(--mdr-text-muted);
+}
+
+.mdr-hd-block ins {
+  background: var(--hd-soft);
+  color: var(--mdr-text);
+  text-decoration: underline;
+  text-decoration-color: var(--hd-author);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.mdr-hd-block del {
+  color: var(--mdr-delete);
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+.mdr-hd-by {
+  display: inline-block;
+  margin-top: 2px;
+  color: var(--mdr-text-muted);
+  font: 500 var(--mdr-ui-size-small) / 1.4 var(--mdr-font-ui);
+}
+
+.mdr-hd-fold {
+  display: block;
+  width: 100%;
+  margin: 0 0 10px;
+  padding: 4px 0 4px 14px;
+  border: 0;
+  border-left: 3px dotted color-mix(in srgb, var(--mdr-rule) 55%, transparent);
+  background: none;
+  color: var(--mdr-text-muted);
+  font: var(--mdr-ui-size-small) / 1.4 var(--mdr-font-ui);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mdr-hd-fold:hover {
+  color: var(--mdr-text);
+}
+
+/* narrow windows: the timeline sits above the diff */
+@media (max-width: 899.98px) {
+  .mdr-history {
+    width: 100vw;
+    border-left: 0;
+  }
+
+  .mdr-history-cols {
+    flex-direction: column;
+  }
+
+  .mdr-history-list {
+    flex: 0 0 auto;
+    max-height: 38vh;
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--mdr-rule) 25%, transparent);
+  }
+
+  .mdr-history-diff {
+    padding: 0 16px 32px;
+  }
+
+  .mdr-history-diff-head {
+    margin: 0 -16px 12px;
+    padding: 10px 16px;
+  }
+}

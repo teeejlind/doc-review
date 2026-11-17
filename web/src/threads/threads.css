@@ -1,0 +1,1040 @@
+/*
+ * web/src/threads/threads.css (P3; CONTRACTS §11.4, §11.6, §12.2, R7.4).
+ * Card internals, composers, suggestion rows, conflict and recovered-draft cards, the rail header panel, and the
+ * rail's viewport extras (floating Comment button, off-screen pill, "+N above" chip, anchor ticks). Colours come
+ * only from tokens.css. Insertions are underlined and deletions struck through, never colour alone.
+ */
+
+/* ------------------------------------------------------------------ shared controls */
+
+.mdr-button:disabled,
+.mdr-button[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mdr-button--small {
+  min-height: 26px;
+  padding: 0 10px;
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-button--quiet {
+  border-color: transparent;
+  background: transparent;
+  color: var(--mdr-text-muted);
+}
+
+.mdr-button--quiet:hover {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+.mdr-icon-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--mdr-radius-small);
+  background: transparent;
+  color: var(--mdr-text-muted);
+  cursor: pointer;
+}
+
+.mdr-icon-button:hover:not(:disabled) {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+.mdr-icon-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.mdr-link-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mdr-text-muted);
+  font: inherit;
+  font-size: var(--mdr-ui-size-small);
+  cursor: pointer;
+}
+
+.mdr-link-button:hover:not(:disabled):not([aria-disabled="true"]) {
+  color: var(--mdr-accent);
+  text-decoration: underline;
+}
+
+.mdr-link-button[aria-disabled="true"],
+.mdr-link-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.mdr-topbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mdr-topbar-group .mdr-button {
+  margin-right: 6px;
+}
+
+/* ------------------------------------------------------------------ card internals */
+
+.mdr-card-label {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mdr-card-tag {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--mdr-hover);
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-unread-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mdr-author-claude);
+}
+
+.mdr-card--resolved .mdr-card-author,
+.mdr-card--resolved .mdr-message-body {
+  color: var(--mdr-text-muted);
+}
+
+.mdr-message {
+  position: relative;
+  margin-top: 8px;
+}
+
+.mdr-message + .mdr-message {
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--mdr-rule) 18%, transparent);
+}
+
+.mdr-message-author {
+  font-weight: 600;
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-card-time,
+.mdr-message-time {
+  flex: none;
+  color: var(--mdr-text-faint);
+  font-size: var(--mdr-ui-size-small);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* A resolved card's head carries the name, the Resolved tag and Reopen, and in a 240-300 px rail that is all it has room
+   for: the time goes, Reopen is compact and never squeezed, and the name keeps the rest (Pass 4 rail-ui 16: the name
+   was clipped to a sliver at 1280 and gone at 800, and Reopen ran off the card's edge). */
+.mdr-card--resolved .mdr-card-time {
+  display: none;
+}
+
+.mdr-card--resolved .mdr-card-head .mdr-button {
+  flex: none;
+  padding: 0 8px;
+}
+
+.mdr-card-tag {
+  flex: none;
+}
+
+@container cardhead (max-width: 230px) {
+  .mdr-card--resolved .mdr-card-tag {
+    display: none;
+  }
+}
+
+/* the author's name and the time on one line; the name stays an element of its own (just the name) */
+.mdr-message-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+/* a folded card has one line for the author and the preview */
+.mdr-card[data-collapsed="true"] .mdr-card-time {
+  display: none;
+}
+
+.mdr-message-author::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--mdr-author-tj);
+  vertical-align: 1px;
+}
+
+.mdr-message-author[data-by="Claude"]::before {
+  background: var(--mdr-author-claude);
+}
+
+.mdr-message-body {
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.mdr-message-body code {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--mdr-hover);
+  font-family: var(--mdr-font-mono);
+  font-size: 0.92em;
+}
+
+.mdr-message-body a {
+  color: var(--mdr-focus);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* a body with several lines: one block per line (the text itself carries no newlines then) */
+.mdr-body-line {
+  display: block;
+}
+
+.mdr-body-line--blank {
+  height: 0.6em;
+}
+
+.mdr-body-line--bullet {
+  position: relative;
+  padding-left: 1.1em;
+}
+
+.mdr-body-line--bullet::before {
+  content: '•';
+  position: absolute;
+  left: 0.2em;
+}
+
+.mdr-message-edited,
+.mdr-message-deleted {
+  color: var(--mdr-text-faint);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-message-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.mdr-message:hover .mdr-message-actions,
+.mdr-message:focus-within .mdr-message-actions,
+.mdr-card[data-active="true"] .mdr-message-actions {
+  opacity: 1;
+}
+
+.mdr-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.mdr-accept-all {
+  margin-top: 8px;
+}
+
+/* static cards: the rail header's doc, Detached and unplaced lists (in flow, never positioned) */
+
+.mdr-card.mdr-card--static {
+  position: relative;
+  margin-top: 8px;
+}
+
+.mdr-card.mdr-card--static[data-collapsed="true"] {
+  max-height: 64px;
+  cursor: pointer;
+}
+
+.mdr-card.mdr-card--static[data-collapsed="true"] .mdr-card-quote {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-top: 4px;
+}
+
+/* what the fold clips can't be hit or tabbed to: a pointer-down on a clipped button would unfold the card under the
+   cursor and the click would be lost (a tap on the card unfolds it first) */
+.mdr-card.mdr-card--static[data-collapsed="true"] .mdr-card-body > :not(.mdr-card-head):not(.mdr-card-quote) {
+  visibility: hidden;
+}
+
+/* the new-comment card */
+
+.mdr-card--draft {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-author-tj) 55%, transparent), var(--mdr-shadow-popover);
+}
+
+/* §11.4 hover overlay: a collapsed card opens without changing its layout height (the scheduler measures the body, which
+   the collapse never clips), so hovering never relayouts. It opens only into the free space below it (--shell-room, written
+   by the scheduler: the distance to the next card), never over a neighbour: in a dense cluster there is no room, so the
+   cards stay put and can be reached one after the other by moving the mouse down, instead of the open card hiding the
+   next two or three from above (QA3 rail-ui 8). The last card, or one with space below it, opens in full as before. */
+.mdr-card--rail[data-collapsed="true"]:hover {
+  max-height: calc(var(--shell-collapsed-height) + var(--shell-room, 9999px));
+  z-index: 3;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-rule) 55%, transparent), var(--mdr-shadow-popover);
+}
+
+/* ------------------------------------------------------------------ suggestion rows */
+
+.mdr-suggestions {
+  margin-top: 8px;
+}
+
+.mdr-suggestion-row {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-bg);
+  box-shadow: inset 2px 0 0 var(--mdr-author-tj);
+}
+
+.mdr-suggestion-row[data-by="Claude"] {
+  box-shadow: inset 2px 0 0 var(--mdr-author-claude);
+}
+
+.mdr-suggestion-row[data-state="stale"] {
+  box-shadow: inset 2px 0 0 var(--mdr-warn);
+}
+
+.mdr-suggestion-row--decided {
+  display: flex;
+  gap: 8px;
+  padding: 4px 10px;
+  box-shadow: none;
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-suggestion-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-suggestion-kind {
+  min-width: 0;
+  font-weight: 600;
+  color: var(--mdr-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.mdr-suggestion-tag {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--mdr-hover);
+  color: var(--mdr-text-muted);
+}
+
+.mdr-suggestion-tag[data-state="stale"] {
+  color: var(--mdr-warn);
+}
+
+.mdr-hunks {
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.mdr-hunks--mono {
+  font-family: var(--mdr-font-mono);
+  font-size: var(--mdr-ui-size-small);
+  white-space: pre-wrap;
+}
+
+.mdr-hunk + .mdr-hunk {
+  margin-top: 4px;
+}
+
+.mdr-hunk-del {
+  color: var(--mdr-delete);
+  text-decoration: line-through;
+}
+
+.mdr-hunk-ins {
+  color: var(--mdr-insert);
+  text-decoration: underline;
+}
+
+.mdr-hunk-arrow {
+  color: var(--mdr-text-faint);
+}
+
+.mdr-suggestion-note {
+  margin: 6px 0 0;
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-suggestion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.mdr-suggestion-actions:empty {
+  display: none;
+}
+
+.mdr-button--accept:not(:disabled) {
+  border-color: var(--mdr-accent);
+  background: var(--mdr-accent);
+  color: var(--mdr-accent-text);
+}
+
+.mdr-suggestion-error,
+.mdr-composer-error {
+  margin: 6px 0 0;
+  color: var(--mdr-danger);
+  font-size: var(--mdr-ui-size-small);
+}
+
+/* ------------------------------------------------------------------ composer */
+
+.mdr-composer {
+  margin-top: 10px;
+}
+
+.mdr-composer-input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 32px;
+  max-height: 50vh;
+  padding: 6px 8px;
+  border: 1px solid color-mix(in srgb, var(--mdr-rule) 55%, transparent);
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-surface);
+  color: var(--mdr-text);
+  font: var(--mdr-ui-size) / 1.4 var(--mdr-font-ui);
+  field-sizing: content;
+  overflow-y: auto;
+  resize: none;
+}
+
+.mdr-composer-input::placeholder {
+  color: var(--mdr-text-faint);
+}
+
+.mdr-composer-input:focus {
+  border-color: var(--mdr-focus);
+  outline: none;
+}
+
+.mdr-composer[data-open="false"] .mdr-composer-input {
+  height: 30px;
+  border-color: transparent;
+  background: var(--mdr-bg);
+}
+
+.mdr-composer[data-open="false"] .mdr-composer-input:hover {
+  border-color: color-mix(in srgb, var(--mdr-rule) 45%, transparent);
+}
+
+.mdr-composer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.mdr-composer-actions .mdr-button {
+  min-height: 28px;
+  padding: 0 12px;
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-composer-actions .mdr-button--primary:disabled {
+  opacity: 0.45;
+}
+
+/* ------------------------------------------------------------------ conflict card */
+
+.mdr-card--conflict {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-conflict) 50%, transparent), var(--mdr-shadow);
+}
+
+.mdr-conflict-title {
+  font-weight: 600;
+  color: var(--mdr-conflict);
+}
+
+.mdr-card--conflict .mdr-card-meta {
+  margin-top: 4px;
+}
+
+.mdr-conflict-side {
+  margin: 8px 0 0;
+}
+
+.mdr-conflict-side figcaption,
+.mdr-conflict-base summary {
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+  font-weight: 600;
+}
+
+.mdr-conflict-side pre,
+.mdr-conflict-base pre {
+  box-sizing: border-box;
+  max-height: 160px;
+  margin: 4px 0 0;
+  padding: 6px 8px;
+  overflow: auto;
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-conflict-soft);
+  color: var(--mdr-text);
+  font: var(--mdr-ui-size-small) / 1.45 var(--mdr-font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.mdr-conflict-side[data-side="mine"] pre {
+  background: var(--mdr-author-tj-soft);
+}
+
+.mdr-conflict-base {
+  margin-top: 8px;
+}
+
+.mdr-conflict-base summary {
+  cursor: pointer;
+}
+
+/* ------------------------------------------------------------------ recovered-draft card (banner slot) */
+
+.mdr-recovered {
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid color-mix(in srgb, var(--mdr-rule) 35%, transparent);
+  background: var(--mdr-surface);
+  color: var(--mdr-text);
+  font-size: var(--mdr-ui-size);
+}
+
+.mdr-recovered-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.mdr-recovered-title {
+  margin: 0;
+  font-size: var(--mdr-ui-size);
+  font-weight: 600;
+}
+
+.mdr-recovered-detail {
+  margin: 2px 0 0;
+  color: var(--mdr-text-muted);
+}
+
+.mdr-recovered-preview {
+  max-height: 3.2em;
+  margin: 6px 0 0;
+  overflow: hidden;
+  color: var(--mdr-text-muted);
+  font: var(--mdr-ui-size-small) / 1.6 var(--mdr-font-mono);
+  white-space: pre-wrap;
+}
+
+.mdr-recovered-actions {
+  display: flex;
+  flex: none;
+  gap: 6px;
+}
+
+/* ------------------------------------------------------------------ rail header panel */
+
+.mdr-rail-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  min-height: 26px;
+  margin-bottom: 6px;
+}
+
+/* the first row: Comment on document, the "+N above" chip and the settings button, on one line at every rail width.
+   Its height is fixed, so the chip showing or hiding never moves the header's bottom edge (minTop). */
+.mdr-rail-head-row--main {
+  flex-wrap: nowrap;
+  gap: 8px;
+  height: 26px;
+  min-height: 0;
+}
+
+.mdr-rail-head-row--main .mdr-doc-comment {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin-right: auto;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.mdr-rail-settings-button[aria-expanded="true"] {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+/* a narrow rail (the 240 px minimum in the Claude pane) shortens the button's words rather than wrapping them */
+@container railhead (max-width: 285px) {
+  .mdr-rail-long {
+    display: none;
+  }
+}
+
+/* only while there is something to act on: unread, and Accept / Reject all */
+.mdr-rail-head-row--status {
+  gap: 4px 14px;
+}
+
+.mdr-rail-head-row--status .mdr-link-button,
+.mdr-unread-count {
+  white-space: nowrap;
+}
+
+.mdr-rail-settings {
+  margin: 2px 0 8px;
+  padding: 8px 10px 10px;
+  border-radius: var(--mdr-radius);
+  background: var(--mdr-surface);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-rule) 28%, transparent), var(--mdr-shadow);
+}
+
+.mdr-rail-settings[hidden] {
+  display: none;
+}
+
+.mdr-rail-setting + .mdr-rail-setting {
+  margin-top: 10px;
+}
+
+/* indented to the switch's label (track 24 px + gap 6 px) */
+.mdr-rail-setting-hint {
+  margin: 3px 0 0 30px;
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+  line-height: 1.4;
+}
+
+.mdr-unread-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--mdr-author-claude-soft);
+  color: var(--mdr-text);
+  font: 500 var(--mdr-ui-size-small) / 1.5 var(--mdr-font-ui);
+  cursor: pointer;
+}
+
+.mdr-unread-count-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--mdr-author-claude);
+}
+
+.mdr-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mdr-text-muted);
+  font: var(--mdr-ui-size-small) / 1.4 var(--mdr-font-ui);
+  cursor: pointer;
+}
+
+.mdr-switch:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.mdr-switch-track {
+  position: relative;
+  flex: none;
+  width: 24px;
+  height: 14px;
+  border-radius: 7px;
+  /* WCAG 1.4.11: the OFF track is the full --mdr-rule (3:1 against the page in both themes), not a mix of it */
+  background: var(--mdr-rule);
+  transition: background 120ms ease;
+}
+
+.mdr-switch-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--mdr-surface);
+  transition: transform 120ms ease;
+}
+
+.mdr-switch[aria-checked="true"] .mdr-switch-track {
+  background: var(--mdr-accent);
+}
+
+.mdr-switch[aria-checked="true"] .mdr-switch-thumb {
+  transform: translateX(10px);
+}
+
+.mdr-switch[aria-checked="true"] {
+  color: var(--mdr-text);
+}
+
+.mdr-rail-section {
+  margin: 10px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid color-mix(in srgb, var(--mdr-rule) 22%, transparent);
+}
+
+.mdr-rail-section-title {
+  margin: 0;
+  color: var(--mdr-text-muted);
+  font: 600 var(--mdr-ui-size-small) / 1.4 var(--mdr-font-ui);
+  letter-spacing: 0.02em;
+}
+
+.mdr-rail-section-note {
+  margin: 2px 0 0;
+  color: var(--mdr-text-faint);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-fold-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+}
+
+.mdr-fold-button svg {
+  transition: transform 120ms ease;
+}
+
+.mdr-fold-button[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+.mdr-fold-button .mdr-unread-dot {
+  margin-left: 4px;
+}
+
+.mdr-overflow-chip {
+  flex: none;
+  height: 20px;
+  white-space: nowrap;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--mdr-hover);
+  color: var(--mdr-text-muted);
+  font: 500 var(--mdr-ui-size-small) / 20px var(--mdr-font-ui);
+  cursor: pointer;
+}
+
+.mdr-overflow-chip:hover {
+  color: var(--mdr-text);
+}
+
+/* ------------------------------------------------------------------ anchor ticks (§11.4) */
+
+.mdr-ticks {
+  position: absolute;
+  top: 0;
+  left: calc(var(--shell-gutter) / -2);
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.mdr-tick {
+  position: absolute;
+  top: 0;
+  left: -5px;
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--mdr-rule) 70%, transparent);
+}
+
+.mdr-tick-line {
+  position: absolute;
+  left: 9px;
+  width: 1px;
+  background: color-mix(in srgb, var(--mdr-rule) 60%, transparent);
+  visibility: hidden;
+}
+
+.mdr-tick[data-active="true"] .mdr-tick-line,
+.mdr-tick[data-hover="true"] .mdr-tick-line {
+  visibility: visible;
+}
+
+.mdr-tick[data-active="true"] {
+  background: var(--mdr-hl-active);
+}
+
+/* ------------------------------------------------------------------ floating Comment button and off-screen pill */
+
+.mdr-float-comment {
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: calc(var(--shell-gutter) / -2 - 15px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--mdr-rule) 40%, transparent);
+  border-radius: 50%;
+  background: var(--mdr-surface-raised);
+  box-shadow: var(--mdr-shadow);
+  color: var(--mdr-accent);
+  cursor: pointer;
+}
+
+.mdr-float-comment:hover {
+  background: var(--mdr-hover);
+}
+
+.mdr-offscreen-pill {
+  box-sizing: border-box;
+  position: fixed;
+  z-index: 6;
+  height: 30px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--mdr-accent);
+  box-shadow: var(--mdr-shadow-popover);
+  color: var(--mdr-accent-text);
+  font: 500 var(--mdr-ui-size-small) / 30px var(--mdr-font-ui);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.mdr-float-comment[hidden],
+.mdr-offscreen-pill[hidden],
+.mdr-overflow-chip[hidden] {
+  display: none;
+}
+
+/* The first-use hint under the header while a document has no comments. It hangs below the header (absolute), so it
+   never adds to minTop and the first card still sits level with its text; in the sheet it is in the flow. */
+.mdr-rail-hint {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin: 6px 0 0;
+  color: var(--mdr-text-faint);
+  font-size: var(--mdr-ui-size-small);
+  line-height: 1.5;
+}
+
+.mdr-sheet-body .mdr-rail-hint {
+  position: static;
+}
+
+.mdr-rail-conflicts .mdr-card.mdr-card--static {
+  margin-top: 8px;
+}
+
+/* ------------------------------------------------------------------ whole-document comment dock (Trial, TJ 2026-10-24) */
+
+/* Fixed to the bottom of the viewport, whatever the scroll position. RailView writes left and width (the rail column's),
+   and in narrow mode the bottom (above the sheet's bar). It rides over the cards (the active one is z 1) and under the
+   off-screen pill (z 6). */
+.mdr-dock {
+  box-sizing: border-box;
+  position: fixed;
+  z-index: 5;
+  bottom: 0;
+  /* the strip under and around the box is the page's own colour, so a card scrolling by never shows through the gap */
+  padding: 8px 0 12px;
+  background: var(--mdr-bg);
+  color: var(--mdr-text);
+  font: var(--mdr-ui-size) / 1.45 var(--mdr-font-ui);
+}
+
+.mdr-dock-card {
+  box-sizing: border-box;
+  padding: 6px;
+  border-radius: var(--mdr-radius);
+  background: var(--mdr-surface-raised);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-rule) 40%, transparent), var(--mdr-shadow-popover);
+}
+
+.mdr-dock-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mdr-dock-input {
+  box-sizing: border-box;
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 32px;
+  /* grows with its text up to 40% of the window, then scrolls inside */
+  max-height: 40vh;
+  padding: 6px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-bg);
+  color: var(--mdr-text);
+  font: inherit;
+  field-sizing: content;
+  overflow-y: auto;
+  resize: none;
+}
+
+.mdr-dock-input::placeholder {
+  color: var(--mdr-text-faint);
+}
+
+.mdr-dock-input:hover {
+  border-color: color-mix(in srgb, var(--mdr-rule) 45%, transparent);
+}
+
+.mdr-dock-input:focus {
+  border-color: var(--mdr-focus);
+  outline: none;
+}
+
+/* collapsed: one line, however much it holds (a kept draft shows its first line) */
+.mdr-dock[data-open="false"] .mdr-dock-input {
+  height: 32px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.mdr-dock-posted {
+  flex: none;
+  color: var(--mdr-success);
+  font-size: var(--mdr-ui-size-small);
+  font-weight: 600;
+}
+
+.mdr-dock-posted:empty {
+  display: none;
+}
+
+.mdr-dock-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.mdr-dock-hint {
+  min-width: 0;
+  color: var(--mdr-text-faint);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-dock-foot .mdr-button {
+  flex: none;
+  min-height: 28px;
+  padding: 0 12px;
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-dock-foot .mdr-button--primary:disabled {
+  opacity: 0.45;
+}
+
+.mdr-dock .mdr-composer-error {
+  margin: 6px 2px 0;
+}
+
+/* Below the breakpoint the dock spans the window, directly above the sheet's bar (which is 49 px tall; RailView writes the
+   measured value). The open sheet (z 30) covers it. RailView publishes the dock's height as --shell-dock-h, so the scroll
+   box leaves that much clear: the last lines, and the caret the browser scrolls into view, never sit behind it. */
+.mdr-dock[data-narrow="true"] {
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: 49px;
+  padding: 0;
+  background: none;
+}
+
+.mdr-dock[data-narrow="true"] .mdr-dock-card {
+  border-radius: 0;
+  box-shadow: 0 -1px 0 color-mix(in srgb, var(--mdr-rule) 35%, transparent), 0 -6px 24px color-mix(in srgb, var(--mdr-text) 8%, transparent);
+}
+
+/* Rail mode: the dock hangs over the foot of the rail's column, so the browser's own caret scroll in a card's box keeps
+   clear of it, and so does Tab onto a card's Reply button. Only while the focus is in the rail (a text box, or a button
+   reached by keyboard: a mouse click on a button leaves it alone): the document's column is not under the dock, and
+   typing there is left alone. */
+.mdr-app:not([data-narrow="true"]) #mdr-scroll.mdr-scroll:has(.mdr-rail :focus-visible) {
+  scroll-padding-bottom: var(--shell-dock-reserve, 0px);
+}
+
+.mdr-app[data-narrow="true"] #mdr-scroll.mdr-scroll {
+  padding-bottom: var(--shell-dock-h, 0px);
+  scroll-padding-bottom: calc(72px + var(--shell-dock-h, 0px));
+}
+
+.mdr-app[data-narrow="true"] .mdr-toasts.mdr-toasts {
+  bottom: calc(64px + var(--shell-dock-h, 0px));
+}

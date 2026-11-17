@@ -1,0 +1,25 @@
+doc-review runtime (generated; do not edit by hand)
+doc-review commit: unknown (not a git checkout) (plus uncommitted changes)
+build command: npm run build:plugin
+mdr version: 2.0.0-dev
+bundler: esbuild 0.28.2 (minified, ESM, target node22.22, jsdom inlined with 2 asserted patches); web: vite 8.3.4
+runs on: Node >= 22.22 (the plugin installs Node 26.5.0 itself, see scripts/runtime.lock)
+
+sha256  file
+dce28ad207f28ae6148b4d24069b2da9b079adb9908b41c3e57f047e160cdc0d  THIRD_PARTY_LICENSES.txt
+6064b8206d1539fa53196b2b4bab16010cb5fe6e3c2b26ceb4e6883b668cc044  mdr.mjs
+0459b0bc4cea0ba33cd2fbc2fd28d72aaaf1feb7892aef204a47e66b5ede6b63  web/assets/index-C80c4KaZ.js
+100b3ac37ab708d0157fb09f5bd6934d5da9f2819b0470b8f6603637e1edc720  web/assets/index-D8n3CcXp.css
+a7b0970988134a51e86c6c4a0bfb10ef95a705bba5e5a143881539429f664e91  web/assets/source-serif-4-cyrillic-ext-wght-italic-BXuSHrjR.woff2
+f423aab1098e5b0dae59d200aadbb9433e687f505425c7e73d1f65ae2b59016e  web/assets/source-serif-4-cyrillic-ext-wght-normal-cHuGMAiY.woff2
+264fdd043a30e2f21a636f62d966b20fc7133b70002526763e8edb9852c51bb6  web/assets/source-serif-4-cyrillic-wght-italic-RLIThRd4.woff2
+25e85aef8acff54f91ea7e85c9c2c260caf97101fdef194ed6b8b58bc34ce3eb  web/assets/source-serif-4-cyrillic-wght-normal-DwHjdM4S.woff2
+86596ea15a6d48ec748a31c626910622bd1524e6e18a82682a8ed9c7bb3d26d5  web/assets/source-serif-4-greek-wght-italic-F2ziEGcb.woff2
+d84b0c5fda036126b6bb9205b144500fe08fec6d54d8bdd60645bc3e6577490b  web/assets/source-serif-4-greek-wght-normal-ece1310W.woff2
+515639854d3566c43860d2005770645c590df8b43a0144c70fe2566c33015ede  web/assets/source-serif-4-latin-ext-wght-italic-CpkvI5hy.woff2
+41529a5b38008d9ea01e28ec18693a714a3216669ee477d83a5b9db999369625  web/assets/source-serif-4-latin-ext-wght-normal-CxNHBx-q.woff2
+663e7ef3037a56dce81dfc33f68c1e6445995ffd8887991b3c0b68a7689c9da5  web/assets/source-serif-4-latin-wght-italic-D2yaqPoE.woff2
+c1df4596be5029233ed2afbb8b2f6ea20784b3fb1aa5d6b5c6519ccd85eb3dfb  web/assets/source-serif-4-latin-wght-normal-D9elroTD.woff2
+7fe6ce7982612bca2290399a7b881950926592cdbe7dda0d5e6911451f3561c5  web/assets/source-serif-4-vietnamese-wght-italic-C3q834ic.woff2
+63b54e70d3bfb018162640bfb0015be46a2ec96f3c00d4170c8a02d0ff9d5abd  web/assets/source-serif-4-vietnamese-wght-normal-D-yuW59g.woff2
+9e0e6b6c70c92253e90dcb3bd71102665582055cda935a4d48d29684a45a538a  web/index.html

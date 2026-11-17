@@ -1,0 +1,6 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": { "outDir": "../node_modules/.cache/tsbuild/node", "types": ["node"] },
+  "include": ["**/*.ts", "../core/md/dom-env.node.ts"],
+  "references": [{ "path": "../shared" }, { "path": "../core" }]
+}

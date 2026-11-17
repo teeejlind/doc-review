@@ -1,0 +1,141 @@
+/*
+ * web/src/narrow/narrow.css (P3; CONTRACTS §11.4 "Narrow mode", §12.2.1). The bottom sheet below 900 px: a bar
+ * docked to the bottom of the window that opens into a panel holding the rail header's items and the comment
+ * cards, in flow (no scheduler, no transforms).
+ */
+
+.mdr-sheet-host:empty {
+  display: none;
+}
+
+/* The scroll container runs under the fixed sheet, so the browser's own caret reveal and keyboard scrolling count a
+   line behind the Comments bar as visible. Keep the bar's height (48 px) plus a margin clear at the bottom. */
+.mdr-app[data-narrow="true"] .mdr-scroll {
+  scroll-padding-bottom: 72px;
+}
+
+.mdr-sheet {
+  box-sizing: border-box;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  max-height: 72vh;
+  border-top: 1px solid color-mix(in srgb, var(--mdr-rule) 35%, transparent);
+  border-radius: 14px 14px 0 0;
+  background: var(--mdr-surface);
+  box-shadow: 0 -6px 24px color-mix(in srgb, var(--mdr-text) 12%, transparent);
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+  line-height: 1.45;
+}
+
+.mdr-sheet :focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}
+
+.mdr-sheet-bar {
+  flex: none;
+}
+
+.mdr-sheet-handle {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 14px 16px 10px;
+  border: 0;
+  background: none;
+  color: var(--mdr-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mdr-sheet-grabber {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 36px;
+  height: 4px;
+  margin-left: -18px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--mdr-rule) 55%, transparent);
+}
+
+.mdr-sheet-title {
+  font-weight: 600;
+}
+
+.mdr-sheet-count {
+  min-width: 18px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--mdr-hover);
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.mdr-sheet-chevron {
+  margin-left: auto;
+  color: var(--mdr-text-muted);
+  transition: transform 160ms ease;
+}
+
+.mdr-sheet[data-open="true"] .mdr-sheet-chevron {
+  transform: rotate(180deg);
+}
+
+.mdr-sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 16px 24px;
+}
+
+.mdr-sheet-body[hidden] {
+  display: none;
+}
+
+/* cards are in flow here: no transform, never hidden for want of a placement */
+.mdr-sheet .mdr-card {
+  position: relative;
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+  margin-top: 8px;
+  transition: box-shadow 120ms ease;
+}
+
+.mdr-sheet .mdr-card.mdr-card--rail {
+  max-height: none;
+  /* the draft and conflict cards carry mdr-card--rail but nothing places them here; rail.css hides every card that
+     has no data-placed, which in the sheet made the composer invisible (and un-focusable) */
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.mdr-sheet .mdr-rail-header {
+  padding-top: 0;
+}
+
+.mdr-sheet-cards {
+  margin-top: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdr-sheet-chevron {
+    transition: none;
+  }
+}

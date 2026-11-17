@@ -1,0 +1,156 @@
+/*
+ * web/src/rail/rail.css (P3; CONTRACTS §11.3, §11.4, §11.6).
+ * Cards are absolutely positioned at the rail's top and moved only by the scheduler's transform writes
+ * (translateY(top − railTop)), animated over CARD_MOVE_MS (--shell-card-move, set from the constant) and instant
+ * under prefers-reduced-motion. data-placed / data-collapsed / data-instant are written by the scheduler.
+ */
+
+.mdr-rail {
+  --shell-card-move: 120ms;
+  --shell-collapsed-height: 40px;
+}
+
+.mdr-rail-header {
+  box-sizing: border-box;
+  position: relative;
+  /* its bottom edge is minTop: keep it short so the first lines' cards sit level with them */
+  padding: 14px 0 4px;
+  opacity: var(--mdr-chrome-opacity);
+  transition: opacity 280ms ease;
+  /* its controls change their words with the rail's width (a narrow rail says "Comment", not "Comment on document") */
+  container: railhead / inline-size;
+}
+
+.mdr-card {
+  box-sizing: border-box;
+  position: absolute;
+  font-size: var(--mdr-ui-size);
+  line-height: 1.45;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  /* no border: the hairline is a box-shadow ring, so the card's height is exactly its body's (the scheduler
+     measures the body, which collapsing never clips) */
+  border-radius: var(--mdr-radius);
+  background: var(--mdr-surface);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-rule) 28%, transparent), var(--mdr-shadow);
+  color: var(--mdr-text);
+  cursor: default;
+  transition: transform var(--shell-card-move) ease-out, box-shadow 120ms ease;
+  will-change: transform;
+}
+
+/* before the first layout, and while unplaced or folded into the "+N above" chip */
+.mdr-card--rail:not([data-placed]),
+.mdr-card--rail[data-placed="false"],
+.mdr-card--rail[data-placed="overflow"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.mdr-card--rail[data-instant="true"] {
+  transition: none;
+}
+
+.mdr-card--rail[data-collapsed="true"] {
+  max-height: var(--shell-collapsed-height);
+}
+
+.mdr-card[data-active="true"] {
+  z-index: 1;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-accent) 65%, transparent), var(--mdr-shadow-popover);
+}
+
+.mdr-card:not([data-active="true"]):hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--mdr-rule) 55%, transparent), var(--mdr-shadow);
+}
+
+.mdr-card-body {
+  padding: 10px 12px 12px;
+}
+
+.mdr-card-head {
+  /* its controls change with the card's width (a resolved card in a 240 px rail drops its tag) */
+  container: cardhead / inline-size;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.mdr-card-author {
+  /* the name is the last thing in a card's head to be cut (and then with an ellipsis): the preview and the time go first */
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.mdr-card-author::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--mdr-author-tj);
+  vertical-align: 1px;
+}
+
+.mdr-card-author[data-by="Claude"]::before {
+  background: var(--mdr-author-claude);
+}
+
+.mdr-card-preview {
+  flex: 0 100 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--mdr-text-muted);
+  text-overflow: ellipsis;
+}
+
+.mdr-card[data-collapsed="false"] .mdr-card-preview,
+.mdr-card[data-collapsed="false"] .mdr-card-replies {
+  display: none;
+}
+
+/* "N replies" at the end of a folded card's one line: the latest message is what the preview shows */
+.mdr-card-replies {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--mdr-hover);
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+}
+
+.mdr-card-quote {
+  margin: 8px 0 0;
+  padding-left: 8px;
+  border-left: 2px solid color-mix(in srgb, var(--mdr-rule) 45%, transparent);
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+  overflow-wrap: anywhere;
+}
+
+.mdr-card-message {
+  margin: 8px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.mdr-card-meta {
+  margin: 6px 0 0;
+  color: var(--mdr-text-faint);
+  font-size: var(--mdr-ui-size-small);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdr-card {
+    transition: none;
+  }
+}

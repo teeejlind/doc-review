@@ -1,0 +1,1047 @@
+/* web/src/editor/editor.css (P2). Everything inside #mdr-editor-host and #mdr-toolbar-host (CONTRACTS §12.2.1).
+   Only var(--mdr-*) tokens from THEME_TOKENS: no colour literals, font families or radii of our own. */
+
+/* ------------------------------------------------------------------ editor host and document */
+
+#mdr-editor-host {
+  position: relative;
+}
+
+#mdr-editor-host .ProseMirror {
+  outline: none;
+  font-family: var(--mdr-font-body);
+  font-size: var(--mdr-body-size);
+  line-height: var(--mdr-body-leading);
+  color: var(--mdr-text);
+  caret-color: var(--mdr-caret);
+  max-width: var(--mdr-measure);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  padding: 24px 0 120px;
+  /* the page is as tall as the window (less the top bar, the column's top margin and this padding): a click below the
+     last line, or anywhere on an empty document, lands in the editor with the caret at the end */
+  min-height: calc(100vh - 280px);
+}
+
+/* an empty document says where to start; the float keeps the caret at the start of the line */
+#mdr-editor-host .ProseMirror > p:only-child:has(> br.ProseMirror-trailingBreak:only-child)::before {
+  content: 'Start writing…';
+  float: left;
+  height: 0;
+  color: var(--mdr-text-faint);
+  pointer-events: none;
+}
+
+#mdr-editor-host .ProseMirror ::selection {
+  background: var(--mdr-selection);
+}
+
+#mdr-editor-host .ProseMirror[data-readonly='true'] {
+  caret-color: transparent;
+}
+
+#mdr-editor-host .ProseMirror p {
+  margin: 0 0 0.9em;
+}
+
+#mdr-editor-host .ProseMirror h1,
+#mdr-editor-host .ProseMirror h2,
+#mdr-editor-host .ProseMirror h3,
+#mdr-editor-host .ProseMirror h4,
+#mdr-editor-host .ProseMirror h5,
+#mdr-editor-host .ProseMirror h6 {
+  font-family: var(--mdr-font-body);
+  line-height: 1.25;
+  margin: 1.4em 0 0.5em;
+  font-weight: 650;
+}
+
+#mdr-editor-host .ProseMirror h1 { font-size: 1.75em; }
+#mdr-editor-host .ProseMirror h2 { font-size: 1.4em; }
+#mdr-editor-host .ProseMirror h3 { font-size: 1.2em; }
+#mdr-editor-host .ProseMirror h4,
+#mdr-editor-host .ProseMirror h5,
+#mdr-editor-host .ProseMirror h6 { font-size: 1em; }
+
+#mdr-editor-host .ProseMirror a {
+  color: var(--mdr-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#mdr-editor-host .ProseMirror code {
+  font-family: var(--mdr-font-mono);
+  font-size: 0.88em;
+  background: var(--mdr-surface);
+  border-radius: var(--mdr-radius-small);
+  padding: 0.1em 0.3em;
+}
+
+#mdr-editor-host .ProseMirror pre {
+  font-family: var(--mdr-font-mono);
+  font-size: 0.85em;
+  line-height: 1.5;
+  background: var(--mdr-surface);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  padding: 12px 14px;
+  margin: 0 0 1em;
+  overflow-x: auto;
+  white-space: pre;
+}
+
+#mdr-editor-host .ProseMirror pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+#mdr-editor-host .ProseMirror blockquote {
+  margin: 0 0 1em;
+  /* logical sides: a right-to-left quote (dir="auto", bidi.ts) keeps its rule on the side it starts from */
+  padding: 0;
+  padding-inline-start: 1em;
+  border-inline-start: 3px solid var(--mdr-rule);
+  color: var(--mdr-text-muted);
+}
+
+#mdr-editor-host .ProseMirror ul,
+#mdr-editor-host .ProseMirror ol {
+  margin: 0 0 0.9em;
+  padding-inline-start: 1.5em;
+}
+
+#mdr-editor-host .ProseMirror li > p {
+  margin: 0 0 0.25em;
+}
+
+#mdr-editor-host .ProseMirror hr {
+  border: none;
+  border-top: 1px solid var(--mdr-rule);
+  margin: 1.5em 0;
+}
+
+#mdr-editor-host .ProseMirror img {
+  max-width: 100%;
+}
+
+#mdr-editor-host .ProseMirror table {
+  /* a table wider than the column scrolls inside its own box, not over the comment rail */
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  /* the control bar (about 30 px) sits in this gap while the caret is in the table, so it never covers the text above */
+  margin: 2.4em 0 1em;
+  font-size: 0.95em;
+}
+
+#mdr-editor-host .ProseMirror th,
+#mdr-editor-host .ProseMirror td {
+  border: 1px solid var(--mdr-rule);
+  padding: 4px 8px;
+  vertical-align: top;
+}
+
+#mdr-editor-host .ProseMirror th {
+  background: var(--mdr-surface);
+  font-weight: 600;
+}
+
+/* The header row of a top-level table stays pinned while its table scrolls by (stickyHeader.ts). Sticky only binds
+   once that plugin sets a table that fits the column to overflow: visible; a wider table keeps its own sideways
+   scroll and gets a translateY instead. Opaque background (--mdr-surface) so body rows never show through; the
+   inset shadows redraw the cell borders, which border-collapse leaves behind with the table when the cell moves. */
+#mdr-editor-host .ProseMirror > table > tbody > tr:first-child > th,
+#mdr-editor-host .ProseMirror > table > thead > tr > th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-clip: padding-box;
+  box-shadow: inset 0 -1px 0 var(--mdr-rule), inset 0 1px 0 var(--mdr-rule);
+}
+
+#mdr-editor-host .ProseMirror th p,
+#mdr-editor-host .ProseMirror td p {
+  margin: 0;
+}
+
+
+/* ------------------------------------------------------------------ suggestions (§6.3: never colour alone) */
+
+/* the suggestion marks draw their own decoration below; a plain <del> is GFM strikethrough and keeps its line */
+#mdr-editor-host .ProseMirror ins,
+#mdr-editor-host .ProseMirror del.mdr-sugg--del,
+#mdr-editor-host .ProseMirror del[data-inline] {
+  text-decoration: none;
+}
+
+#mdr-editor-host .ProseMirror del:not(.mdr-sugg--del) {
+  text-decoration: line-through;
+}
+
+#mdr-editor-host .mdr-sugg--ins {
+  color: var(--mdr-insert);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+#mdr-editor-host .mdr-sugg--del {
+  color: var(--mdr-delete);
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+}
+
+#mdr-editor-host .mdr-sugg--ins.mdr-sugg--tj {
+  background: var(--mdr-author-tj-soft);
+  text-decoration-color: var(--mdr-author-tj);
+}
+
+#mdr-editor-host .mdr-sugg--ins.mdr-sugg--claude {
+  background: var(--mdr-author-claude-soft);
+  text-decoration-color: var(--mdr-author-claude);
+}
+
+#mdr-editor-host .mdr-sugg--del.mdr-sugg--tj {
+  text-decoration-color: var(--mdr-author-tj);
+}
+
+#mdr-editor-host .mdr-sugg--del.mdr-sugg--claude {
+  text-decoration-color: var(--mdr-author-claude);
+}
+
+#mdr-editor-host .mdr-sugg--mod {
+  box-shadow: inset 3px 0 0 var(--mdr-suggest);
+}
+
+/* a format-only change (bold, italic, code, a link): the inserted copy is the new formatting, marked but not as new text */
+#mdr-editor-host .mdr-sugg--fmt {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+#mdr-editor-host .mdr-sugg--fmt.mdr-sugg--tj {
+  background: var(--mdr-author-tj-soft);
+  text-decoration-color: var(--mdr-author-tj);
+}
+
+#mdr-editor-host .mdr-sugg--fmt.mdr-sugg--claude {
+  background: var(--mdr-author-claude-soft);
+  text-decoration-color: var(--mdr-author-claude);
+}
+
+/* a copy that shows nothing the other copy doesn't: a format change's struck text, an unchanged item of a swapped list */
+#mdr-editor-host .mdr-sugg--shadow {
+  display: none;
+}
+
+/* the active card's tracked change (R2.5): the same step up the comment highlights take when active */
+#mdr-editor-host .mdr-sugg--active.mdr-sugg--ins {
+  background: var(--mdr-hl-active);
+}
+
+#mdr-editor-host .mdr-sugg--active.mdr-sugg--del {
+  background: color-mix(in srgb, var(--mdr-hl-active) 55%, transparent);
+}
+
+#mdr-editor-host .mdr-sugg--active.mdr-sugg--fmt {
+  background: var(--mdr-hl-active);
+}
+
+/* a selection of whole cells (a drag across them): prosemirror-tables marks them .selectedCell and paints nothing itself */
+#mdr-editor-host .ProseMirror td.selectedCell,
+#mdr-editor-host .ProseMirror th.selectedCell {
+  background: color-mix(in srgb, var(--mdr-focus) 18%, transparent);
+}
+
+#mdr-editor-host .ProseMirror .selectedCell ::selection {
+  background: transparent;
+}
+
+/* ------------------------------------------------------------------ comment highlights (§12.1) */
+
+#mdr-editor-host .hl {
+  border-bottom: 2px solid var(--mdr-author-claude);
+  background: var(--mdr-author-claude-soft);
+  cursor: pointer;
+}
+
+#mdr-editor-host .hl.hl--tj {
+  border-bottom-color: var(--mdr-author-tj);
+  background: var(--mdr-author-tj-soft);
+}
+
+#mdr-editor-host .hl.is-active {
+  background: var(--mdr-hl-active);
+}
+
+#mdr-editor-host .hl.hl--resolved {
+  background: transparent;
+  border-bottom-style: dotted;
+}
+
+#mdr-editor-host .hl-block {
+  outline: 2px solid var(--mdr-author-claude-soft);
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ conflict and unsaveable blocks (§7.4) */
+
+#mdr-editor-host .mdr-conflict {
+  background: var(--mdr-conflict-soft);
+  box-shadow: inset 3px 0 0 var(--mdr-conflict);
+}
+
+/* ------------------------------------------------------------------ popovers */
+
+#mdr-editor-host .mdr-popover {
+  position: absolute;
+  z-index: var(--mdr-z-popover);
+  background: var(--mdr-surface-raised);
+  color: var(--mdr-text);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  box-shadow: var(--mdr-shadow-popover);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 280px;
+}
+
+#mdr-editor-host .mdr-popover__field {
+  font: inherit;
+  color: var(--mdr-text);
+  background: var(--mdr-bg);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius-small);
+  padding: 4px 6px;
+}
+
+#mdr-editor-host .mdr-popover__field:focus-visible,
+#mdr-editor-host .mdr-popover__btn:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+#mdr-editor-host .mdr-popover__error {
+  color: var(--mdr-danger);
+  font-size: var(--mdr-ui-size-small);
+}
+
+#mdr-editor-host .mdr-popover__error:empty {
+  display: none;
+}
+
+#mdr-editor-host .mdr-popover__actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+#mdr-editor-host .mdr-popover__btn {
+  font: inherit;
+  color: var(--mdr-text);
+  background: transparent;
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius-small);
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+#mdr-editor-host .mdr-popover__btn.is-primary {
+  background: var(--mdr-accent);
+  color: var(--mdr-accent-text);
+  border-color: var(--mdr-accent);
+}
+
+#mdr-editor-host .mdr-popover__btn[aria-disabled='true'] {
+  background: transparent;
+  color: var(--mdr-text-faint);
+  border-color: var(--mdr-rule);
+  cursor: not-allowed;
+}
+
+#mdr-editor-host .mdr-popover__url {
+  color: var(--mdr-accent);
+  word-break: break-all;
+  max-width: 420px;
+}
+
+#mdr-editor-host .mdr-popover__note {
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size-small);
+}
+
+#mdr-editor-host .mdr-popover--source,
+#mdr-editor-host .mdr-popover--yaml {
+  min-width: min(560px, 90%);
+}
+
+#mdr-editor-host .mdr-popover__field--source {
+  font-family: var(--mdr-font-mono);
+  font-size: var(--mdr-ui-size-small);
+  line-height: 1.5;
+  resize: vertical;
+  white-space: pre;
+  overflow: auto;
+}
+
+/* ------------------------------------------------------------------ toolbar and mode pill (§12.13, §12.2.4) */
+
+#mdr-toolbar-host .mdr-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+  color: var(--mdr-text);
+}
+
+/* Below the desktop layout (shell.css scrolls the toolbar sideways from 1100 px up) the toolbar wraps onto a second
+   row instead of running past the window edge: in a narrow Claude pane (about 560 px and less) the Editing /
+   Suggesting pill, the last item, was cut off with no way to reach it (final pass 2026-11-16). */
+@media (max-width: 1099px) {
+  #mdr-toolbar-host .mdr-toolbar {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn {
+  font: inherit;
+  color: var(--mdr-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--mdr-radius-small);
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  cursor: pointer;
+  opacity: var(--mdr-chrome-opacity);
+}
+
+/* Undo / Redo make the row about 60px longer: in a narrow pane the toolbar would start wrapping its own labels
+   ("Text style" over two lines), so they step aside there (Cmd+Z and Cmd+Shift+Z still work). */
+@media (max-width: 700px) {
+  #mdr-toolbar-host .mdr-toolbar__btn[data-action='undo'],
+  #mdr-toolbar-host .mdr-toolbar__btn[data-action='redo'] {
+    display: none;
+  }
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn:hover {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn[aria-pressed='true'] {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+  border-color: var(--mdr-rule);
+}
+
+/* Text style is a menu button: shaded while its menu is open, not because the caret is in a heading. It is as wide as
+   its longest label, so the buttons after it do not move as the caret goes from a heading to a paragraph. */
+#mdr-toolbar-host .mdr-toolbar__btn[aria-expanded='true'] {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn[data-action='heading'] {
+  min-width: 7.6em;
+  text-align: left;
+  white-space: nowrap;
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn svg {
+  display: block;
+  margin: 0 auto;
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn[aria-disabled='true'],
+#mdr-toolbar-host .mdr-mode-pill[aria-disabled='true'] {
+  color: var(--mdr-text-faint);
+  cursor: default;
+  opacity: 0.45;
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn:focus-visible,
+#mdr-toolbar-host .mdr-mode-pill:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+#mdr-toolbar-host .mdr-toolbar__btn.is-bold { font-weight: 700; }
+#mdr-toolbar-host .mdr-toolbar__btn.is-italic { font-style: italic; }
+#mdr-toolbar-host .mdr-toolbar__btn.is-strike { text-decoration: line-through; }
+#mdr-toolbar-host .mdr-toolbar__btn.is-mono { font-family: var(--mdr-font-mono); }
+
+#mdr-toolbar-host .mdr-toolbar__menu-wrap {
+  position: relative;
+}
+
+#mdr-toolbar-host .mdr-toolbar__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: var(--mdr-z-popover);
+  display: flex;
+  flex-direction: column;
+  min-width: 140px;
+  background: var(--mdr-surface-raised);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  box-shadow: var(--mdr-shadow-popover);
+  padding: 4px;
+}
+
+#mdr-toolbar-host .mdr-toolbar__menu[hidden] {
+  display: none;
+}
+
+#mdr-toolbar-host .mdr-toolbar__menu .mdr-toolbar__btn {
+  text-align: left;
+  opacity: 1;
+}
+
+#mdr-toolbar-host .mdr-toolbar__sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 6px;
+  background: var(--mdr-rule);
+}
+
+#mdr-toolbar-host .mdr-mode-pill {
+  position: relative;
+  font: inherit;
+  font-size: var(--mdr-ui-size-small);
+  font-weight: 600;
+  color: var(--mdr-text-muted);
+  background: var(--mdr-surface);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  padding: 3px 24px 3px 12px;
+  cursor: pointer;
+  opacity: var(--mdr-chrome-opacity);
+}
+
+/* The pill is as wide as its wider label in both modes, so switching Editing and Suggesting never reflows the top bar
+   (at 1280 px the wider label used to wrap the bar onto two rows; T2 polish #17). The aria-label names the mode. */
+#mdr-toolbar-host .mdr-mode-pill::before {
+  content: 'Suggesting';
+  display: block;
+  height: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* a chevron says this is a switch; it sits in the right padding, outside the reserved label width */
+#mdr-toolbar-host .mdr-mode-pill::after {
+  content: '▾';
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8em;
+}
+
+#mdr-toolbar-host .mdr-mode-pill[data-mode='suggesting'] {
+  color: var(--mdr-suggest);
+  background: var(--mdr-suggest-soft);
+  border-color: var(--mdr-suggest);
+  opacity: 1;
+}
+
+/* The pill is never squeezed or clipped (onboarding; at 1440 px with the Claude badge and Export in the row it read
+   "Suggestinc"): it keeps its width and its label on one line. From 1100 px up shell.css lets the toolbar scroll
+   sideways inside #mdr-toolbar-host when the row is full; the pill then sticks to the box's right edge, over the
+   buttons scrolled under it, so it is always whole. Its containing block (the toolbar) spans the whole row so it can. */
+#mdr-toolbar-host .mdr-mode-pill {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (min-width: 1100px) {
+  #mdr-toolbar-host .mdr-toolbar {
+    box-sizing: border-box;
+    width: max-content;
+    min-width: 100%;
+  }
+
+  #mdr-toolbar-host .mdr-mode-pill {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    margin-left: auto;
+    box-shadow: -10px 0 0 var(--mdr-bg);
+  }
+}
+
+/* ------------------------------------------------------------------ task items (§12.13) */
+
+#mdr-editor-host .ProseMirror li[data-task] {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45em;
+  margin-inline-start: -1.3em;
+}
+
+#mdr-editor-host .mdr-task__box {
+  flex: none;
+  line-height: var(--mdr-body-leading);
+}
+
+#mdr-editor-host .mdr-task {
+  accent-color: var(--mdr-accent);
+  margin: 0;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+#mdr-editor-host .mdr-task:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}
+
+#mdr-editor-host .mdr-task__content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------------ code blocks and the language field (§12.13) */
+
+#mdr-editor-host .mdr-code-block {
+  position: relative;
+  margin: 0 0 1em;
+}
+
+#mdr-editor-host .ProseMirror .mdr-code-block pre {
+  margin: 0;
+}
+
+#mdr-editor-host .mdr-code-block__bar {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  z-index: 1;
+}
+
+#mdr-editor-host .mdr-code-language {
+  width: 10ch;
+  font-family: var(--mdr-font-mono);
+  font-size: var(--mdr-ui-size-small);
+  color: var(--mdr-text-faint);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--mdr-radius-small);
+  padding: 1px 4px;
+  text-align: right;
+}
+
+#mdr-editor-host .mdr-code-block:hover .mdr-code-language,
+#mdr-editor-host .mdr-code-language:focus {
+  color: var(--mdr-text);
+  background: var(--mdr-bg);
+  border-color: var(--mdr-rule);
+}
+
+#mdr-editor-host .mdr-code-language:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------------ raw blocks and inline HTML (§12.13, D44) */
+
+#mdr-editor-host .mdr-raw-block {
+  margin: 0 0 1em;
+  padding: 8px 12px;
+  border: 1px dashed var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  background: var(--mdr-surface);
+  color: var(--mdr-text-muted);
+  cursor: pointer;
+}
+
+#mdr-editor-host .mdr-raw-block:hover {
+  border-color: var(--mdr-text-faint);
+}
+
+#mdr-editor-host .mdr-raw-block:focus-visible,
+#mdr-editor-host .mdr-raw-block.is-selected {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}
+
+#mdr-editor-host .ProseMirror .mdr-raw-block__source {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--mdr-font-mono);
+  font-size: var(--mdr-ui-size-small);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#mdr-editor-host .mdr-inline-html {
+  font-family: var(--mdr-font-mono);
+  font-size: 0.8em;
+  color: var(--mdr-text-muted);
+  background: var(--mdr-surface);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius-small);
+  padding: 0 0.3em;
+  margin: 0 0.1em;
+  cursor: pointer;
+  white-space: pre;
+}
+
+#mdr-editor-host .mdr-inline-html:hover {
+  color: var(--mdr-text);
+}
+
+#mdr-editor-host .mdr-inline-html.is-selected {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------------ table controls (§12.13 Tables) */
+
+#mdr-editor-host .mdr-table-controls {
+  position: absolute;
+  z-index: var(--mdr-z-popover);
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 2px;
+  background: var(--mdr-surface-raised);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  box-shadow: var(--mdr-shadow);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size-small);
+}
+
+#mdr-editor-host .mdr-table-controls[hidden] {
+  display: none;
+}
+
+#mdr-editor-host .mdr-table-controls__btn {
+  font: inherit;
+  min-width: 26px;
+  height: 24px;
+  padding: 0 5px;
+  color: var(--mdr-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--mdr-radius-small);
+  cursor: pointer;
+}
+
+#mdr-editor-host .mdr-table-controls__btn:hover {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+#mdr-editor-host .mdr-table-controls__btn[aria-pressed='true'] {
+  border-color: var(--mdr-rule);
+  color: var(--mdr-text);
+}
+
+#mdr-editor-host .mdr-table-controls__btn[aria-disabled='true'] {
+  color: var(--mdr-text-faint);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+#mdr-editor-host .mdr-table-controls__btn:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+#mdr-editor-host .mdr-table-controls__sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 3px;
+  background: var(--mdr-rule);
+}
+
+/* ------------------------------------------------------------------ frontmatter panel (§12.12 A) */
+
+#mdr-editor-host .mdr-frontmatter {
+  margin: 0 0 1.2em;
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+  line-height: 1.4;
+  color: var(--mdr-text);
+  white-space: normal;
+  border-bottom: 1px solid var(--mdr-rule);
+  padding-bottom: 6px;
+}
+
+#mdr-editor-host .mdr-frontmatter.is-selected {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}
+
+#mdr-editor-host .mdr-frontmatter__line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 4px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+#mdr-editor-host .mdr-frontmatter__line:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+  border-radius: var(--mdr-radius-small);
+}
+
+#mdr-editor-host .mdr-frontmatter__status {
+  font-weight: 600;
+  padding: 1px 8px;
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  background: var(--mdr-surface);
+}
+
+#mdr-editor-host .mdr-frontmatter__count,
+#mdr-editor-host .mdr-frontmatter__label {
+  color: var(--mdr-text-muted);
+}
+
+/* the disclosure: a bordered 24 px box right after the field count, so it reads as a control (T2 polish #39) */
+#mdr-editor-host .mdr-frontmatter__caret {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--mdr-control-border);
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-surface);
+  color: var(--mdr-text-muted);
+  font-size: var(--mdr-ui-size);
+  line-height: 1;
+}
+
+#mdr-editor-host .mdr-frontmatter__line:hover .mdr-frontmatter__caret {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+#mdr-editor-host .mdr-frontmatter__body[hidden] {
+  display: none;
+}
+
+#mdr-editor-host .ProseMirror .mdr-frontmatter__table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0;
+  font-size: var(--mdr-ui-size);
+}
+
+#mdr-editor-host .ProseMirror .mdr-frontmatter__table th,
+#mdr-editor-host .ProseMirror .mdr-frontmatter__table td {
+  border: none;
+  border-bottom: 1px solid var(--mdr-rule);
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: top;
+  background: transparent;
+}
+
+#mdr-editor-host .ProseMirror .mdr-frontmatter__table th {
+  width: 22%;
+  font-weight: 500;
+  color: var(--mdr-text-muted);
+  white-space: nowrap;
+}
+
+#mdr-editor-host .mdr-frontmatter__input {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  color: var(--mdr-text);
+  background: var(--mdr-bg);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius-small);
+  padding: 2px 6px;
+}
+
+#mdr-editor-host .mdr-frontmatter__input:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+#mdr-editor-host .ProseMirror[data-mode='suggesting'] .mdr-frontmatter__input,
+#mdr-editor-host .mdr-frontmatter__input[readonly] {
+  color: var(--mdr-text-muted);
+  background: var(--mdr-surface);
+}
+
+#mdr-editor-host .ProseMirror .mdr-frontmatter__source {
+  margin: 0;
+  padding: 2px 6px;
+  border: none;
+  background: var(--mdr-surface);
+  font-family: var(--mdr-font-mono);
+  font-size: var(--mdr-ui-size-small);
+  white-space: pre-wrap;
+  color: var(--mdr-text-muted);
+}
+
+#mdr-editor-host .mdr-frontmatter__comment {
+  display: block;
+  color: var(--mdr-text-faint);
+  font-size: var(--mdr-ui-size-small);
+}
+
+#mdr-editor-host .mdr-frontmatter__warn {
+  margin-left: 4px;
+  color: var(--mdr-warn);
+}
+
+#mdr-editor-host .mdr-frontmatter__error {
+  color: var(--mdr-danger);
+  font-size: var(--mdr-ui-size-small);
+}
+
+#mdr-editor-host .mdr-frontmatter__error:empty {
+  display: none;
+}
+
+#mdr-editor-host .mdr-frontmatter__actions {
+  width: 1%;
+  white-space: nowrap;
+}
+
+#mdr-editor-host .mdr-frontmatter__add {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 4px 0;
+}
+
+#mdr-editor-host .mdr-frontmatter__add .mdr-frontmatter__input {
+  width: auto;
+  flex: 1 1 140px;
+}
+
+#mdr-editor-host .mdr-frontmatter__foot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#mdr-editor-host .mdr-frontmatter__note {
+  margin: 6px 0;
+  color: var(--mdr-text-muted);
+}
+
+#mdr-editor-host .mdr-frontmatter__btn {
+  font: inherit;
+  font-size: var(--mdr-ui-size-small);
+  color: var(--mdr-text-muted);
+  background: transparent;
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius-small);
+  padding: 1px 8px;
+  cursor: pointer;
+}
+
+#mdr-editor-host .mdr-frontmatter__btn:hover {
+  background: var(--mdr-hover);
+  color: var(--mdr-text);
+}
+
+#mdr-editor-host .mdr-frontmatter__btn:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 1px;
+}
+
+/* ------------------------------------------------------------------ body status chip (§12.12 B) */
+
+#mdr-editor-host .mdr-status-block.is-collapsed {
+  display: none;
+}
+
+#mdr-editor-host .mdr-status-chip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 0.9em;
+  padding: 4px 8px;
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size-small);
+  line-height: 1.4;
+  white-space: normal;
+  color: var(--mdr-text-muted);
+  background: var(--mdr-surface);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  cursor: pointer;
+  user-select: none;
+}
+
+#mdr-editor-host .mdr-status-chip:hover {
+  border-color: var(--mdr-text-faint);
+}
+
+#mdr-editor-host .mdr-status-chip:focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}
+
+#mdr-editor-host .mdr-status-chip.is-expanded {
+  display: inline-flex;
+  margin: 0 0 2px;
+  padding: 0 6px;
+  background: transparent;
+  border-color: transparent;
+  cursor: default;
+}
+
+#mdr-editor-host .mdr-status-chip__label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--mdr-text-faint);
+}
+
+#mdr-editor-host .mdr-status-chip__pill {
+  color: var(--mdr-text);
+  background: var(--mdr-surface-raised);
+  border: 1px solid var(--mdr-rule);
+  border-radius: var(--mdr-radius);
+  padding: 0 8px;
+}
+
+#mdr-editor-host .mdr-status-chip__meta {
+  color: var(--mdr-text-muted);
+}
+
+#mdr-editor-host .mdr-status-chip__edit {
+  margin-left: auto;
+  color: var(--mdr-accent);
+}
+
+#mdr-editor-host .mdr-status-chip__edit::after {
+  content: 'Edit';
+}
+
+/* the text a new-comment box is open on (the textarea has the focus, so the editor's own selection isn't drawn) */
+#mdr-editor-host .hl.hl-draft {
+  background: var(--mdr-hl-active);
+  border-bottom-color: var(--mdr-author-tj);
+}

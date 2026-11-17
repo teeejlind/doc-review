@@ -1,0 +1,736 @@
+{
+ "content": {
+  "documentId": "spike-small",
+  "title": "mdr-spike-scratch (delete me)",
+  "revisionId": "r1",
+  "suggestionsViewMode": "SUGGESTIONS_INLINE",
+  "comments": [
+   {
+    "anchorId": "kix.yme0k2vxu9k0",
+    "commentId": "doco.C4",
+    "headPost": {
+     "author": {
+      "displayName": "Pat Author"
+     },
+     "content": "C4 on emoji",
+     "createTime": "2026-11-16T17:19:55.862Z"
+    },
+    "plainTextQuote": "emoji 🎉",
+    "status": "OPEN"
+   },
+   {
+    "anchorId": "kix.u2k8kv6zaz4b",
+    "commentId": "doco.C5",
+    "headPost": {
+     "author": {
+      "displayName": "Pat Author"
+     },
+     "content": "C5 spanning two list items",
+     "createTime": "2026-11-16T17:19:55.863Z"
+    },
+    "plainTextQuote": "Numbered one\nNumbered two",
+    "replies": [
+     {
+      "author": {
+       "displayName": "Pat Author"
+      },
+      "content": "Done, resolving",
+      "createTime": "2026-11-16T17:20:27.585Z",
+      "commentAction": "RESOLVE"
+     }
+    ],
+    "status": "RESOLVED"
+   },
+   {
+    "anchorId": "kix.k8atnbmh80e",
+    "commentId": "doco.C2",
+    "headPost": {
+     "author": {
+      "displayName": "Pat Author"
+     },
+     "content": "C2 on SECOND pricing claim",
+     "createTime": "2026-11-16T17:19:55.862Z"
+    },
+    "plainTextQuote": "pricing claim",
+    "status": "OPEN"
+   },
+   {
+    "anchorId": "kix.m7cj1vdjmuvs",
+    "commentId": "doco.C1",
+    "headPost": {
+     "author": {
+      "displayName": "Pat Author"
+     },
+     "content": "C1 on bold text",
+     "createTime": "2026-11-16T17:19:55.862Z"
+    },
+    "plainTextQuote": "bold text",
+    "replies": [
+     {
+      "author": {
+       "displayName": "Sam Example"
+      },
+      "content": "Reply R1 to C1",
+      "createTime": "2026-11-16T17:20:20.863Z"
+     }
+    ],
+    "status": "OPEN"
+   },
+   {
+    "anchorId": "kix.yp3sulnbty9k",
+    "commentId": "doco.C3",
+    "headPost": {
+     "author": {
+      "displayName": "Pat Author"
+     },
+     "content": "C3 on table cell café",
+     "createTime": "2026-11-16T17:19:55.862Z"
+    },
+    "plainTextQuote": "caf&#233; ☕",
+    "status": "OPEN"
+   },
+   {
+    "anchorId": "kix.gone",
+    "commentId": "doco.C6",
+    "headPost": {
+     "author": {
+      "displayName": "Sam Example"
+     },
+     "content": "Cut this whole claim",
+     "createTime": "2026-11-16T17:21:00Z"
+    },
+    "plainTextQuote": "pricing claim",
+    "status": "OPEN"
+   }
+  ],
+  "suggestions": [
+   {
+    "suggestionId": "suggest.djlqpnuwyau1",
+    "status": "OPEN",
+    "headPost": {
+     "author": {
+      "displayName": "Sam Example"
+     }
+    },
+    "summaryText": "Replace: “Spike” with “Proof”"
+   }
+  ],
+  "tabs": [
+   {
+    "tabProperties": {
+     "tabId": "t.0",
+     "title": "Tab 1"
+    },
+    "documentTab": {
+     "body": {
+      "content": [
+       {
+        "endIndex": 1,
+        "sectionBreak": {}
+       },
+       {
+        "startIndex": 1,
+        "endIndex": 25,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 1,
+           "endIndex": 7,
+           "textRun": {
+            "content": "Proof ",
+            "textStyle": {},
+            "suggestedInsertionIds": [
+             "suggest.djlqpnuwyau1"
+            ]
+           }
+          },
+          {
+           "startIndex": 7,
+           "endIndex": 13,
+           "textRun": {
+            "content": "Spike ",
+            "textStyle": {},
+            "suggestedDeletionIds": [
+             "suggest.djlqpnuwyau1"
+            ]
+           }
+          },
+          {
+           "startIndex": 13,
+           "endIndex": 25,
+           "textRun": {
+            "content": "heading one\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "HEADING_1"
+         }
+        }
+       },
+       {
+        "startIndex": 25,
+        "endIndex": 92,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 25,
+           "endIndex": 46,
+           "textRun": {
+            "content": "Intro paragraph with ",
+            "textStyle": {}
+           }
+          },
+          {
+           "startIndex": 46,
+           "endIndex": 55,
+           "textRun": {
+            "content": "bold text",
+            "textStyle": {
+             "bold": true
+            }
+           }
+          },
+          {
+           "startIndex": 55,
+           "endIndex": 57,
+           "textRun": {
+            "content": ", ",
+            "textStyle": {}
+           }
+          },
+          {
+           "startIndex": 57,
+           "endIndex": 68,
+           "textRun": {
+            "content": "italic text",
+            "textStyle": {
+             "italic": true
+            }
+           }
+          },
+          {
+           "startIndex": 68,
+           "endIndex": 75,
+           "textRun": {
+            "content": " and a ",
+            "textStyle": {}
+           }
+          },
+          {
+           "startIndex": 75,
+           "endIndex": 90,
+           "textRun": {
+            "content": "link to example",
+            "textStyle": {
+             "link": {
+              "url": "https://example.com"
+             },
+             "underline": true
+            }
+           }
+          },
+          {
+           "startIndex": 90,
+           "endIndex": 92,
+           "textRun": {
+            "content": ".\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         }
+        }
+       },
+       {
+        "startIndex": 92,
+        "endIndex": 107,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 92,
+           "endIndex": 107,
+           "textRun": {
+            "content": "Second heading\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "HEADING_2"
+         }
+        }
+       },
+       {
+        "startIndex": 107,
+        "endIndex": 134,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 107,
+           "endIndex": 134,
+           "textRun": {
+            "content": "First bullet about pricing\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         },
+         "bullet": {
+          "listId": "kix.b"
+         }
+        }
+       },
+       {
+        "startIndex": 134,
+        "endIndex": 162,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 134,
+           "endIndex": 162,
+           "textRun": {
+            "content": "Second bullet about pricing\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         },
+         "bullet": {
+          "listId": "kix.b"
+         }
+        }
+       },
+       {
+        "startIndex": 162,
+        "endIndex": 176,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 162,
+           "endIndex": 176,
+           "textRun": {
+            "content": "Nested bullet\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         },
+         "bullet": {
+          "listId": "kix.b",
+          "nestingLevel": 1
+         }
+        }
+       },
+       {
+        "startIndex": 176,
+        "endIndex": 189,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 176,
+           "endIndex": 189,
+           "textRun": {
+            "content": "Numbered one\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         },
+         "bullet": {
+          "listId": "kix.n"
+         }
+        }
+       },
+       {
+        "startIndex": 189,
+        "endIndex": 202,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 189,
+           "endIndex": 202,
+           "textRun": {
+            "content": "Numbered two\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         },
+         "bullet": {
+          "listId": "kix.n"
+         }
+        }
+       },
+       {
+        "startIndex": 202,
+        "endIndex": 246,
+        "table": {
+         "columns": 2,
+         "rows": 3,
+         "tableRows": [
+          {
+           "startIndex": 203,
+           "endIndex": 217,
+           "tableCells": [
+            {
+             "startIndex": 204,
+             "endIndex": 210,
+             "content": [
+              {
+               "startIndex": 205,
+               "endIndex": 210,
+               "paragraph": {
+                "elements": [
+                 {
+                  "startIndex": 205,
+                  "endIndex": 210,
+                  "textRun": {
+                   "content": "Name\n",
+                   "textStyle": {
+                    "bold": true
+                   }
+                  }
+                 }
+                ],
+                "paragraphStyle": {
+                 "namedStyleType": "NORMAL_TEXT"
+                }
+               }
+              }
+             ]
+            },
+            {
+             "startIndex": 210,
+             "endIndex": 217,
+             "content": [
+              {
+               "startIndex": 211,
+               "endIndex": 217,
+               "paragraph": {
+                "elements": [
+                 {
+                  "startIndex": 211,
+                  "endIndex": 217,
+                  "textRun": {
+                   "content": "Value\n",
+                   "textStyle": {
+                    "bold": true
+                   }
+                  }
+                 }
+                ],
+                "paragraphStyle": {
+                 "namedStyleType": "NORMAL_TEXT"
+                }
+               }
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "startIndex": 217,
+           "endIndex": 230,
+           "tableCells": [
+            {
+             "startIndex": 218,
+             "endIndex": 225,
+             "content": [
+              {
+               "startIndex": 219,
+               "endIndex": 225,
+               "paragraph": {
+                "elements": [
+                 {
+                  "startIndex": 219,
+                  "endIndex": 225,
+                  "textRun": {
+                   "content": "Alpha\n",
+                   "textStyle": {}
+                  }
+                 }
+                ],
+                "paragraphStyle": {
+                 "namedStyleType": "NORMAL_TEXT"
+                }
+               }
+              }
+             ]
+            },
+            {
+             "startIndex": 225,
+             "endIndex": 230,
+             "content": [
+              {
+               "startIndex": 226,
+               "endIndex": 230,
+               "paragraph": {
+                "elements": [
+                 {
+                  "startIndex": 226,
+                  "endIndex": 230,
+                  "textRun": {
+                   "content": "10%\n",
+                   "textStyle": {}
+                  }
+                 }
+                ],
+                "paragraphStyle": {
+                 "namedStyleType": "NORMAL_TEXT"
+                }
+               }
+              }
+             ]
+            }
+           ]
+          },
+          {
+           "startIndex": 230,
+           "endIndex": 245,
+           "tableCells": [
+            {
+             "startIndex": 231,
+             "endIndex": 237,
+             "content": [
+              {
+               "startIndex": 232,
+               "endIndex": 237,
+               "paragraph": {
+                "elements": [
+                 {
+                  "startIndex": 232,
+                  "endIndex": 237,
+                  "textRun": {
+                   "content": "Beta\n",
+                   "textStyle": {}
+                  }
+                 }
+                ],
+                "paragraphStyle": {
+                 "namedStyleType": "NORMAL_TEXT"
+                }
+               }
+              }
+             ]
+            },
+            {
+             "startIndex": 237,
+             "endIndex": 245,
+             "content": [
+              {
+               "startIndex": 238,
+               "endIndex": 245,
+               "paragraph": {
+                "elements": [
+                 {
+                  "startIndex": 238,
+                  "endIndex": 245,
+                  "textRun": {
+                   "content": "café ☕\n",
+                   "textStyle": {}
+                  }
+                 }
+                ],
+                "paragraphStyle": {
+                 "namedStyleType": "NORMAL_TEXT"
+                }
+               }
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       },
+       {
+        "startIndex": 246,
+        "endIndex": 247,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 246,
+           "endIndex": 247,
+           "textRun": {
+            "content": "\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         }
+        }
+       },
+       {
+        "startIndex": 247,
+        "endIndex": 321,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 247,
+           "endIndex": 321,
+           "textRun": {
+            "content": "The pricing claim appears here. And the pricing claim appears again here.\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         }
+        }
+       },
+       {
+        "startIndex": 321,
+        "endIndex": 340,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 321,
+           "endIndex": 340,
+           "textRun": {
+            "content": "A blockquote line.\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         }
+        }
+       },
+       {
+        "startIndex": 340,
+        "endIndex": 395,
+        "paragraph": {
+         "elements": [
+          {
+           "startIndex": 340,
+           "endIndex": 361,
+           "textRun": {
+            "content": "Final paragraph with ",
+            "textStyle": {}
+           }
+          },
+          {
+           "startIndex": 361,
+           "endIndex": 372,
+           "textRun": {
+            "content": "inline code",
+            "textStyle": {
+             "weightedFontFamily": {
+              "fontFamily": "Roboto Mono",
+              "weight": 400
+             }
+            }
+           }
+          },
+          {
+           "startIndex": 372,
+           "endIndex": 395,
+           "textRun": {
+            "content": " and an emoji 🎉 done.\n",
+            "textStyle": {}
+           }
+          }
+         ],
+         "paragraphStyle": {
+          "namedStyleType": "NORMAL_TEXT"
+         }
+        }
+       }
+      ]
+     },
+     "commentAnchors": {
+      "kix.k8atnbmh80e": {
+       "anchorId": "kix.k8atnbmh80e",
+       "ranges": [
+        {
+         "startIndex": 287,
+         "endIndex": 300
+        }
+       ]
+      },
+      "kix.m7cj1vdjmuvs": {
+       "anchorId": "kix.m7cj1vdjmuvs",
+       "ranges": [
+        {
+         "startIndex": 46,
+         "endIndex": 55
+        }
+       ]
+      },
+      "kix.u2k8kv6zaz4b": {
+       "anchorId": "kix.u2k8kv6zaz4b",
+       "ranges": [
+        {
+         "startIndex": 176,
+         "endIndex": 201
+        }
+       ]
+      },
+      "kix.yme0k2vxu9k0": {
+       "anchorId": "kix.yme0k2vxu9k0",
+       "ranges": [
+        {
+         "startIndex": 380,
+         "endIndex": 388
+        }
+       ]
+      },
+      "kix.yp3sulnbty9k": {
+       "anchorId": "kix.yp3sulnbty9k",
+       "ranges": [
+        {
+         "startIndex": 238,
+         "endIndex": 244
+        }
+       ]
+      }
+     },
+     "lists": {
+      "kix.b": {
+       "listProperties": {
+        "nestingLevels": [
+         {
+          "glyphSymbol": "-"
+         },
+         {
+          "glyphSymbol": "-"
+         }
+        ]
+       }
+      },
+      "kix.n": {
+       "listProperties": {
+        "nestingLevels": [
+         {
+          "glyphType": "DECIMAL"
+         },
+         {
+          "glyphSymbol": "-"
+         }
+        ]
+       }
+      }
+     }
+    }
+   }
+  ]
+ }
+}

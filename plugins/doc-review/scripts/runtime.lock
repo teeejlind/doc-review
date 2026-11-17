@@ -1,0 +1,15 @@
+# doc-review: the one external thing the plugin downloads, pinned.
+# Official Node.js release, from https://nodejs.org/dist/v26.5.0/SHASUMS256.txt (all six hashes re-checked 2026-10-16;
+# that file's .asc and .sig verify with gpg against release key C82FA3AE1CBEDC6BE46B9360C43CEC45C17AB93C, which is
+# on the release-key list in the nodejs/node README).
+# ensure-runtime.sh / ensure-runtime.ps1 refuse to install anything whose SHA-256 differs from these lines.
+# To change the Node version: update NODE_VERSION, NODE_BASE_URL and all six hashes together from that release's
+# SHASUMS256.txt, then bump the plugin version.
+NODE_VERSION=26.5.0
+NODE_BASE_URL=https://nodejs.org/dist/v26.5.0
+NODE_SHA256_DARWIN_ARM64=ee920559aaa2391569cff4d737e3b83963430e3a14dedd91bfe0ff53171b5af9
+NODE_SHA256_DARWIN_X64=98293394c945a24e64e00b4177bf075ec963ea70b34d1d2e24bd4a71716d334f
+NODE_SHA256_LINUX_X64=22b5f47ad6ae78837e4c2b846019965ce1a06ba143de176102294a1bf44fc677
+NODE_SHA256_LINUX_ARM64=308e5fe89a82461ba5a6cf15ff5221b2cdbd7ae87600aa72bb3c3fbdc66412d1
+NODE_SHA256_WIN_X64=d3b2277dbcccfdf24ef6302928f64f484cff1d77a6d3caa3a28f4d20ce9158f6
+NODE_SHA256_WIN_ARM64=c0cfa5877b6de743301e622f5abc4d26fb0ff8798adffc8fffd2885f426008ba

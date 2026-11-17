@@ -1,0 +1,171 @@
+/*
+ * web/src/theme/tokens.css (P3): every --mdr-* theme token (CONTRACTS §12.2.1, §12.2.2). THEME_TOKENS in
+ * shared/types.ts is the normative list; tests/contract/tokens.test.ts checks this file defines all of them for
+ * light (:root), for dark under prefers-color-scheme (unless data-theme="light" forces light) and under
+ * :root[data-theme="dark"]. tests/unit/web/theme/contrast.test.ts checks the AA pairs in both themes.
+ *
+ * This is the only file in web/ allowed colour literals. Everything else, P2's editor CSS included, uses var().
+ *
+ * Direction: a quiet reading view. Ink and paper greys for text and surfaces, indigo for the accent (Send, links,
+ * focus), purple for the Suggesting indicator, violet for Claude, blue for the human reviewer, green and red for
+ * tracked insertions and deletions. Purple is kept for the few pop moments.
+ *
+ * Hues are used as is for fills and tints, and as darker shades of the same hue wherever they are text or a thin
+ * line, so the contrast pairs hold: >= 4.5:1 for text, >= 3:1 for UI. Soft fills are opaque (no alpha) so the
+ * contrast is exact, and text on every soft fill, insert and delete included, is >= 4.5:1. The dark theme is derived
+ * the same way on the dark surfaces (lighter shades of the same hues), not a copy of the light values.
+ */
+
+:root {
+  color-scheme: light;
+
+  --mdr-bg: #fafafc; /* paper-50 */
+  --mdr-surface: #ffffff;
+  --mdr-surface-raised: #ffffff;
+  --mdr-text: #0e0e10; /* ink-900 */
+  --mdr-text-muted: #4b4b50; /* between ink-700 and ink-500 */
+  --mdr-text-faint: #6c6c70; /* ink-500, a step darker to hold 4.5:1 on paper-50 and hover */
+  --mdr-rule: #8e8e93; /* ink-300 darkened to 3:1; hairlines are mixed down from it */
+  --mdr-control-border: #85858b; /* outlined buttons: 3.5:1 on paper-50, 3:1 on the hover fill (T2 polish #40) */
+  --mdr-focus: #5e59ec;
+  --mdr-accent: #5e59ec; /* indigo #6661ed, a step darker for 4.5:1 as link text on paper-50 */
+  --mdr-accent-text: #ffffff;
+  --mdr-hover: #f1f1f3; /* paper-300 */
+  --mdr-selection: #d7d6fa; /* indigo tint */
+  --mdr-author-tj: #0862e6; /* blue #2479f7, darkened for text */
+  --mdr-author-tj-soft: #dfecfd; /* chart blue-50 */
+  --mdr-author-claude: #8d40dc; /* violet #9d5be1, darkened for text */
+  --mdr-author-claude-soft: #ede1fa; /* violet tint */
+  --mdr-author-external: #c0306f; /* pink #de5d98, darkened for text */
+  --mdr-insert: #00705a; /* positive #00ab8a, darkened to 4.5:1 on every tint */
+  --mdr-delete: #c22e29; /* negative #ff6161, darkened to 4.5:1 on every tint */
+  --mdr-suggest: #7140ff; /* purple: the Suggesting indicator is the one pop moment */
+  --mdr-suggest-soft: #f1ecff;
+  --mdr-caret: var(--mdr-text);
+  --mdr-conflict: #c22e29;
+  --mdr-conflict-soft: #ffeaea;
+  --mdr-hl-active: #fbe7cc; /* chart peach-50 */
+  --mdr-warn: #a8541d; /* peach #e0935f, darkened for text */
+  --mdr-danger: #c22e29;
+  --mdr-success: #00705a;
+
+  --mdr-font-body: 'Source Serif 4 Variable', Georgia, serif;
+  --mdr-font-ui: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+  --mdr-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Cascadia Mono', monospace;
+  --mdr-body-size: 19px;
+  --mdr-body-leading: 1.6;
+  --mdr-measure: 68ch;
+  --mdr-ui-size: 14px;
+  --mdr-ui-size-small: 12px;
+  --mdr-radius: 8px;
+  --mdr-radius-small: 4px;
+  --mdr-shadow: 0 1px 2px rgb(14 14 16 / 0.07), 0 2px 8px rgb(14 14 16 / 0.05);
+  --mdr-shadow-popover: 0 6px 24px rgb(14 14 16 / 0.13), 0 1px 3px rgb(14 14 16 / 0.08);
+  --mdr-z-popover: 20;
+  --mdr-chrome-opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --mdr-bg: #0e0e10;
+    --mdr-surface: #17171a;
+    --mdr-surface-raised: #1f1f23;
+    --mdr-text: #f1f1f3;
+    --mdr-text-muted: #b7b7bc;
+    --mdr-text-faint: #92929a;
+    --mdr-rule: #6e6e75;
+    --mdr-control-border: #7a7a81;
+    --mdr-focus: #9f9cf7;
+    --mdr-accent: #9f9cf7;
+    --mdr-accent-text: #0e0e10;
+    --mdr-hover: #26262a;
+    --mdr-selection: #3b3b86;
+    --mdr-author-tj: #6faafb;
+    --mdr-author-tj-soft: #142a4c;
+    --mdr-author-claude: #c195f2;
+    --mdr-author-claude-soft: #36244b;
+    --mdr-author-external: #f08cb8;
+    --mdr-insert: #2fd1ab;
+    --mdr-delete: #ff8585;
+    --mdr-suggest: #a68bff;
+    --mdr-suggest-soft: #2a1c53;
+    --mdr-caret: var(--mdr-text);
+    --mdr-conflict: #ff8585;
+    --mdr-conflict-soft: #3d1f21;
+    --mdr-hl-active: #513929;
+    --mdr-warn: #eba06a;
+    --mdr-danger: #ff8585;
+    --mdr-success: #2fd1ab;
+
+    --mdr-font-body: 'Source Serif 4 Variable', Georgia, serif;
+    --mdr-font-ui: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+    --mdr-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Cascadia Mono', monospace;
+    --mdr-body-size: 19px;
+    --mdr-body-leading: 1.6;
+    --mdr-measure: 68ch;
+    --mdr-ui-size: 14px;
+    --mdr-ui-size-small: 12px;
+    --mdr-radius: 8px;
+    --mdr-radius-small: 4px;
+    --mdr-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px rgb(0 0 0 / 0.3);
+    --mdr-shadow-popover: 0 6px 24px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
+    --mdr-z-popover: 20;
+    --mdr-chrome-opacity: 1;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --mdr-bg: #0e0e10;
+  --mdr-surface: #17171a;
+  --mdr-surface-raised: #1f1f23;
+  --mdr-text: #f1f1f3;
+  --mdr-text-muted: #b7b7bc;
+  --mdr-text-faint: #92929a;
+  --mdr-rule: #6e6e75;
+  --mdr-control-border: #7a7a81;
+  --mdr-focus: #9f9cf7;
+  --mdr-accent: #9f9cf7;
+  --mdr-accent-text: #0e0e10;
+  --mdr-hover: #26262a;
+  --mdr-selection: #3b3b86;
+  --mdr-author-tj: #6faafb;
+  --mdr-author-tj-soft: #142a4c;
+  --mdr-author-claude: #c195f2;
+  --mdr-author-claude-soft: #36244b;
+  --mdr-author-external: #f08cb8;
+  --mdr-insert: #2fd1ab;
+  --mdr-delete: #ff8585;
+  --mdr-suggest: #a68bff;
+  --mdr-suggest-soft: #2a1c53;
+  --mdr-caret: var(--mdr-text);
+  --mdr-conflict: #ff8585;
+  --mdr-conflict-soft: #3d1f21;
+  --mdr-hl-active: #513929;
+  --mdr-warn: #eba06a;
+  --mdr-danger: #ff8585;
+  --mdr-success: #2fd1ab;
+
+  --mdr-font-body: 'Source Serif 4 Variable', Georgia, serif;
+  --mdr-font-ui: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Arial, sans-serif;
+  --mdr-font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Cascadia Mono', monospace;
+  --mdr-body-size: 19px;
+  --mdr-body-leading: 1.6;
+  --mdr-measure: 68ch;
+  --mdr-ui-size: 14px;
+  --mdr-ui-size-small: 12px;
+  --mdr-radius: 8px;
+  --mdr-radius-small: 4px;
+  --mdr-shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px rgb(0 0 0 / 0.3);
+  --mdr-shadow-popover: 0 6px 24px rgb(0 0 0 / 0.5), 0 1px 3px rgb(0 0 0 / 0.4);
+  --mdr-z-popover: 20;
+  --mdr-chrome-opacity: 1;
+}
+
+/* §12.2.2 / §12.2.4: the caret follows the mode. P2's `.ProseMirror { caret-color: var(--mdr-caret) }` reads it. */
+.mdr-app[data-mode="suggesting"] {
+  --mdr-caret: var(--mdr-suggest);
+}

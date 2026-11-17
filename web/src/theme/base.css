@@ -1,0 +1,73 @@
+/*
+ * web/src/theme/base.css (P3; CONTRACTS §12.0.1, §12.2.1, §12.2.3). Page-level base styles.
+ * The window never scrolls (#mdr-scroll is the one scroll container). Colours come only from tokens.css.
+ * Nothing here selects inside #mdr-editor-host or #mdr-toolbar-host (P2's territory): there is deliberately no
+ * universal box-sizing or ::selection rule, because either would reach into the editor.
+ */
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--mdr-bg);
+  color: var(--mdr-text);
+  font-family: var(--mdr-font-ui);
+  font-size: var(--mdr-ui-size);
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* P3-owned focus rings (R7.4). Scoped to P3's surfaces so the editor's own focus styling stays P2's. */
+.mdr-topbar-actions :focus-visible,
+.mdr-banner-slot :focus-visible,
+.mdr-rail :focus-visible,
+.mdr-empty-state :focus-visible {
+  outline: 2px solid var(--mdr-focus);
+  outline-offset: 2px;
+}
+
+/* Text for screen readers only (the save chip's announcements, the history diff's Inserted / Deleted labels). */
+.mdr-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A plain P3 button (empty state, banners). Cards and the top bar build on it. */
+.mdr-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--mdr-control-border);
+  border-radius: var(--mdr-radius-small);
+  background: var(--mdr-surface);
+  color: var(--mdr-text);
+  font: 500 var(--mdr-ui-size) / 1 var(--mdr-font-ui);
+  cursor: pointer;
+}
+
+.mdr-button:hover {
+  background: var(--mdr-hover);
+}
+
+.mdr-button--primary {
+  border-color: var(--mdr-accent);
+  background: var(--mdr-accent);
+  color: var(--mdr-accent-text);
+}
+
+.mdr-button--primary:hover {
+  background: color-mix(in srgb, var(--mdr-accent) 88%, var(--mdr-text));
+}
