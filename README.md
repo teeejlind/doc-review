@@ -2,12 +2,12 @@
 
 Mark up a Markdown file with Claude the way you would a Google Doc.
 
+![Demo: highlight a sentence in a Markdown file and ask Claude to tighten it, click Send to Claude, Claude replies in the margin with a tracked suggestion, click Accept and the sentence is rewritten](docs/demo.gif)
+
 `doc-review` opens a `.md` file as a page beside your Claude Code chat. You highlight text and leave margin comments,
 type in **Suggesting** mode so every change is tracked, and accept or reject Claude's suggested edits one card at a
 time. When you finish a pass you click **Send to Claude**, and the session wakes up, reads only what changed, and
 answers in the margin. The file on disk stays plain Markdown, byte for byte, except where you or Claude edit it.
-
-![A review in progress: a status chip, margin comments from Claude, and a tracked suggestion with Accept and Reject](docs/screenshot.png)
 
 ## What's in the box
 
