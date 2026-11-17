@@ -1,5 +1,5 @@
 doc-review runtime (generated; do not edit by hand)
-doc-review commit: unknown (not a git checkout) (plus uncommitted changes)
+doc-review commit: 2bd020a940d0dbebc366871a1ff015a1818a27b2
 build command: npm run build:plugin
 mdr version: 2.0.0-dev
 bundler: esbuild 0.28.2 (minified, ESM, target node22.22, jsdom inlined with 2 asserted patches); web: vite 8.3.4
